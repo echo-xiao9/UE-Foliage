@@ -2598,12 +2598,10 @@
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk/usr/include/c++/v1/climits \
   /Users/kangyixiao/EchoFile/coding/Unreal/thirdPerson/Plugins/tets/Intermediate/Build/Mac/x86_64/UE4Editor/Development/tets/Module.tets.gen.cpp \
   /Users/kangyixiao/EchoFile/coding/Unreal/thirdPerson/Plugins/tets/Intermediate/Build/Mac/x86_64/UE4Editor/Development/tets/Definitions.tets.h \
-  /Users/kangyixiao/EchoFile/coding/Unreal/thirdPerson/Plugins/tets/Intermediate/Build/Mac/x86_64/UE4Editor/Inc/tets/PlantBunch.gen.cpp \
+  /Users/kangyixiao/EchoFile/coding/Unreal/thirdPerson/Plugins/tets/Intermediate/Build/Mac/x86_64/UE4Editor/Inc/tets/PlantBunchManager.gen.cpp \
   /Users/Shared/Epic\ Games/UE_4.27/Engine/Source/Runtime/CoreUObject/Public/UObject/GeneratedCppIncludes.h \
   /Users/Shared/Epic\ Games/UE_4.27/Engine/Source/Runtime/CoreUObject/Public/UObject/MetaData.h \
+  /Users/kangyixiao/EchoFile/coding/Unreal/thirdPerson/Plugins/tets/Source/tets/Public/PlantBunchManager.h \
   /Users/kangyixiao/EchoFile/coding/Unreal/thirdPerson/Plugins/tets/Source/tets/Public/PlantBunch.h \
   /Users/kangyixiao/EchoFile/coding/Unreal/thirdPerson/Plugins/tets/Intermediate/Build/Mac/x86_64/UE4Editor/Inc/tets/PlantBunch.generated.h \
-  /Users/kangyixiao/EchoFile/coding/Unreal/thirdPerson/Plugins/tets/Intermediate/Build/Mac/x86_64/UE4Editor/Inc/tets/PlantBunchManager.gen.cpp \
-  /Users/kangyixiao/EchoFile/coding/Unreal/thirdPerson/Plugins/tets/Source/tets/Public/PlantBunchManager.h \
-  /Users/kangyixiao/EchoFile/coding/Unreal/thirdPerson/Plugins/tets/Intermediate/Build/Mac/x86_64/UE4Editor/Inc/tets/PlantBunchManager.generated.h \
-  /Users/kangyixiao/EchoFile/coding/Unreal/thirdPerson/Plugins/tets/Intermediate/Build/Mac/x86_64/UE4Editor/Inc/tets/tets.init.gen.cpp
+  /Users/kangyixiao/EchoFile/coding/Unreal/thirdPerson/Plugins/tets/Intermediate/Build/Mac/x86_64/UE4Editor/Inc/tets/PlantBunchManager.generated.h

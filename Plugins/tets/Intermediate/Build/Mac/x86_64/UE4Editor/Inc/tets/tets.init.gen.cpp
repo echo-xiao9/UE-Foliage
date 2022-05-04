@@ -21,7 +21,7 @@ void EmptyLinkFunctionForGeneratedCodetets_init() {}
 				nullptr,
 				0,
 				PKG_CompiledIn | 0x00000040,
-				0xE516592A,
+				0x97584D33,
 				0xEE2807AE,
 				METADATA_PARAMS(nullptr, 0)
 			};
