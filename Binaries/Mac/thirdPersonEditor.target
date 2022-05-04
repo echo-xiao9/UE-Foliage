@@ -52,14 +52,6 @@
 			"Type": "SymbolFile"
 		},
 		{
-			"Path": "$(ProjectDir)/Plugins/SpawnPlugin/Binaries/Mac/UE4Editor-SpawnPlugin.dylib",
-			"Type": "DynamicLibrary"
-		},
-		{
-			"Path": "$(ProjectDir)/Plugins/SpawnPlugin/Binaries/Mac/UE4Editor-SpawnPlugin.dSYM",
-			"Type": "SymbolFile"
-		},
-		{
 			"Path": "$(ProjectDir)/Plugins/tets/Binaries/Mac/UE4Editor-tets.dylib",
 			"Type": "DynamicLibrary"
 		},
@@ -2284,10 +2276,6 @@
 			"Type": "RequiredResource"
 		},
 		{
-			"Path": "$(ProjectDir)/Plugins/SpawnPlugin/Binaries/Mac/UE4Editor.modules",
-			"Type": "RequiredResource"
-		},
-		{
 			"Path": "$(ProjectDir)/Plugins/tets/Binaries/Mac/UE4Editor.modules",
 			"Type": "RequiredResource"
 		},
@@ -2747,10 +2735,6 @@
 		},
 		{
 			"Path": "$(ProjectDir)/Plugins/FacePlugin/FacePlugin.uplugin",
-			"Type": "UFS"
-		},
-		{
-			"Path": "$(ProjectDir)/Plugins/SpawnPlugin/SpawnPlugin.uplugin",
 			"Type": "UFS"
 		},
 		{
