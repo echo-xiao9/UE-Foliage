@@ -1,0 +1,324 @@
+﻿#include "dboperator.h"
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlQuery>
+#include <string>
+#include <QFile>
+#include <QTextStream>
+DBOperator::DBOperator()
+{
+    db = QSqlDatabase::addDatabase("QSQLITE");
+}
+bool DBOperator::isOpen(){
+    return open;
+}
+bool DBOperator::openDB(QString file){
+    if(open){
+        db.close();
+        open = false;
+    }
+
+    db.setDatabaseName(file);
+
+    if (!db.open())
+        {
+            qDebug() << "Error: Failed to connect database." << db.lastError();
+            return false;
+        }
+        else
+        {
+            qDebug() << "Succeed to connect database." ;
+            open = true;
+            QSqlQuery query(db);
+            if(!query.exec("PRAGMA foreign_keys = ON"))//使外键功能生效
+                 {
+                     qDebug()<<"No Effect!";
+                 }
+        }
+    return true;
+}
+
+bool DBOperator::newDB(QString file){
+    if(openDB(file) == false){
+        return false;
+    }
+    if(excute_sql_file(":/sqlScripts/formwork.sql") != 0){
+        return false;
+    }
+    return true;
+
+
+}
+
+int DBOperator::excute_sql_file(QString path)
+{
+    std::string stdStrPath = path.toStdString();
+    char * sql_file_path = stdStrPath.data();
+    int iRet = 0;
+    QFile qfile(sql_file_path);
+    if (!qfile.exists()) {
+        return -1;
+    }
+    if (!qfile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return -1;
+    }
+    QTextStream in(&qfile);
+    QString qstr_file_data = in.readAll();
+    QSqlQuery qsql(db);
+    QStringList qstrlist_sql =  qstr_file_data.split(";");
+    for (int i = 0; i < qstrlist_sql.size() - 1; i++) {
+        QString qstr_sql_part = qstrlist_sql.at(i).toUtf8();
+        bool sql_result = qsql.exec(qstr_sql_part);
+        if (!sql_result) {
+            QSqlError sql_error = qsql.lastError();
+            //std::cout << sql_error.text().toStdString() << std::endl;
+            //std::cout << sql_error.number() << std::endl;
+            iRet = -1;
+            break;
+        }
+    }
+    return iRet;
+}
+
+QVector<QString> DBOperator::readAllPlantNames(){
+    QVector<QString> result;
+    if(!open){
+        return result;
+    }
+    QString select_all_sql = "select name from plant";
+    QSqlQuery sql_query;
+    sql_query.prepare(select_all_sql);
+    if(!sql_query.exec())
+    {
+        qDebug()<<sql_query.lastError();
+    }
+    else
+    {
+        while(sql_query.next())
+        {
+            QString name = sql_query.value(0).toString();
+            qDebug()<<QString("name: %1").arg(name);
+            result.append(name);
+        }
+    }
+    return result;
+}
+
+plant DBOperator::getOnePlantInfo(QString plantName){
+    plant result;
+    if(!open){
+        return result;
+    }
+    result.name = plantName;
+    {
+        QString select_sql = "select distinct id, hierarchy from plant where name = :name";
+        QSqlQuery sql_query;
+        sql_query.prepare(select_sql);
+        sql_query.bindValue(":name",plantName);
+        if(!sql_query.exec())
+        {
+            qDebug()<<sql_query.lastError();
+        }
+        else
+        {
+            while(sql_query.next())
+            {
+                int id = sql_query.value(0).toInt();
+                int hierarchy = sql_query.value(1).toInt();
+                qDebug()<<QString("name: %1").arg(hierarchy);
+                result.plantID = id;
+                result.hierarchy = hierarchy;
+            }
+        }
+    }
+    {
+        QString select_sql = "select distinct numberTag.key, numberTag.value, numberTag.id from plant, numberTag where plant.name = :name and plant.id = numberTag.plantid";
+        QSqlQuery sql_query;
+        sql_query.prepare(select_sql);
+        sql_query.bindValue(":name",plantName);
+        if(!sql_query.exec())
+        {
+            qDebug()<<sql_query.lastError();
+        }
+        else
+        {
+            while(sql_query.next())
+            {
+                QString key = sql_query.value(0).toString();
+                float value = sql_query.value(1).toFloat();
+                int id = sql_query.value(2).toInt();
+                qDebug()<<QString("key: %1, value: %2").arg(key).arg(value);
+                result.tags.append({id, key,false, "", value, true});
+            }
+        }
+    }
+    {
+        QString select_sql = "select distinct stringTag.key, stringTag.value, stringTag.id from plant, stringTag where plant.name = :name and plant.id = stringTag.plantid";
+        QSqlQuery sql_query;
+        sql_query.prepare(select_sql);
+        sql_query.bindValue(":name",plantName);
+        if(!sql_query.exec())
+        {
+            qDebug()<<sql_query.lastError();
+        }
+        else
+        {
+            while(sql_query.next())
+            {
+                QString key = sql_query.value(0).toString();
+                QString value = sql_query.value(1).toString();
+                int id = sql_query.value(2).toInt();
+                qDebug()<<QString("key: %1, value: %2").arg(key).arg(value);
+                result.tags.append({id, key,true, value, 0, true});
+            }
+        }
+    }
+
+
+    return result;
+}
+
+bool DBOperator::saveTag(int tagID, QString key, QString value){
+    QString update_sql = "update stringTag set key = :key, value = :value where id = :id";
+    QSqlQuery sql_query;
+    sql_query.prepare(update_sql);
+    sql_query.bindValue(":key", key);
+    sql_query.bindValue(":value",value);
+    sql_query.bindValue(":id", tagID);
+    if(!sql_query.exec())
+    {
+        qDebug() << sql_query.lastError();
+        return false;
+    }
+    else
+    {
+        qDebug() << "updated!";
+        return true;
+    }
+}
+
+bool DBOperator::saveTag(int tagID, QString key, float value){
+    QString update_sql = "update numberTag set key = :key, value = :value where id = :id";
+    QSqlQuery sql_query;
+    sql_query.prepare(update_sql);
+    sql_query.bindValue(":key", key);
+    sql_query.bindValue(":value",value);
+    sql_query.bindValue(":id", tagID);
+    if(!sql_query.exec())
+    {
+        qDebug() << sql_query.lastError();
+        return false;
+    }
+    else
+    {
+        qDebug() << "updated!";
+        return true;
+    }
+}
+
+bool DBOperator::addTag(QString plantName, QString key, float value){
+    QString insert_sql = "insert into numberTag (key, value, plantID) values(:key, :value, (select id from plant where name = :name))";
+    QSqlQuery sql_query;
+    sql_query.prepare(insert_sql);
+    sql_query.bindValue(":key",key);
+    sql_query.bindValue(":value",value);
+    sql_query.bindValue(":name", plantName);
+    if(!sql_query.exec())
+    {
+        qDebug() << sql_query.lastError();
+        return false;
+    }
+    else{
+        qDebug() << "Inserted!";
+        return true;
+    }
+}
+
+bool DBOperator::addTag(QString plantName, QString key, QString value){
+    QString insert_sql = "insert into stringTag (key, value, plantID) values(:key, :value, (select id from plant where name = :name))";
+    QSqlQuery sql_query;
+    sql_query.prepare(insert_sql);
+    sql_query.bindValue(":key",key);
+    sql_query.bindValue(":value",value);
+    sql_query.bindValue(":name", plantName);
+    if(!sql_query.exec())
+    {
+        qDebug() << sql_query.lastError();
+        return false;
+    }
+    else{
+        qDebug() << "Inserted!";
+        return true;
+    }
+}
+
+bool DBOperator::deleteTag(int tagID, bool isStringTag){
+    QString delete_sql;
+    if(isStringTag)delete_sql = "delete from stringTag where id = :id";
+    else delete_sql = "delete from numberTag where id = :id";
+    QSqlQuery sql_query;
+    sql_query.prepare(delete_sql);
+    sql_query.bindValue(":id",tagID);
+    if(!sql_query.exec())
+    {
+        qDebug() << sql_query.lastError();
+        return false;
+    }
+    else{
+        qDebug() << "Deleted!";
+        return true;
+    }
+}
+
+bool DBOperator::saveHierarchy(QString plantName, int hierarchy){
+    QString update_sql = "update plant set hierarchy = :hierarchy where name = :name";
+    QSqlQuery sql_query;
+    sql_query.prepare(update_sql);
+    sql_query.bindValue(":hierarchy",hierarchy);
+    sql_query.bindValue(":name",plantName);
+    if(!sql_query.exec())
+    {
+        qDebug() << sql_query.lastError();
+        return false;
+    }
+    else
+    {
+        qDebug() << "updated!";
+        return true;
+    }
+}
+
+bool DBOperator::deletePlant(QString plantName){
+    QString delete_sql = "delete from plant where name = :name";
+    QSqlQuery sql_query;
+    sql_query.prepare(delete_sql);
+    sql_query.bindValue(":name", plantName);
+    if(!sql_query.exec())
+    {
+        qDebug() << sql_query.lastError();
+        return false;
+    }
+    else
+    {
+        qDebug() << "Deleted!";
+        return true;
+    }
+}
+
+bool DBOperator::addPlant(QString plantName){
+    QString add_sql = "insert into plant (name, hierarchy) values (:name, 0)";
+    QSqlQuery sql_query;
+    sql_query.prepare(add_sql);
+    sql_query.bindValue(":name",plantName);
+    if(!sql_query.exec())
+    {
+        qDebug() << sql_query.lastError();
+        return false;
+    }
+    else
+    {
+        qDebug() << "Inserted!";
+        return true;
+    }
+}
+

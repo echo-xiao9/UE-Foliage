@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="cross">cross.png</file>
+        <file alias="plus">plus.png</file>
+        <file alias="number">number.png</file>
+        <file alias="string">string.png</file>
+    </qresource>
+    <qresource prefix="/sqlScripts">
+        <file>formwork.sql</file>
+    </qresource>
+</RCC>
