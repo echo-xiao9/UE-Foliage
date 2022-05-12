@@ -10,8 +10,8 @@
 			"tetsStyle.cpp.obj"
 		],
 		"Module.tets.gen.cpp.obj": [
-			"PlantBunch.gen.cpp.obj",
 			"PlantBunchManager.gen.cpp.obj",
+			"PlantBunch.gen.cpp.obj",
 			"tets.init.gen.cpp.obj"
 		]
 	}
