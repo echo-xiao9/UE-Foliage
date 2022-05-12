@@ -17,7 +17,9 @@ public:
 	APlantBunchManager();
 	UPROPERTY(EditAnywhere, Category = "Generate...")
 		UPlantBunch* plantBunch;
-		
+    
+    UPROPERTY(EditAnywhere, Category = "MainTree")
+    AActor* mainTree;
 
 protected:
 	// Called when the game starts or when spawned
@@ -27,5 +29,5 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	void Generate();
-  void GenerateSingle(FVector centerPos, float radius, float angle);
+    void GenerateSingle(FVector centerPos, float radius, float angle,int type);
 };

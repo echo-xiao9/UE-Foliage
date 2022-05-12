@@ -35,8 +35,17 @@ public:
     UPROPERTY(EditAnywhere, Category = "SubTree")
     TArray<UBlueprint*> subTrees;
     
+    UPROPERTY(EditAnywhere, Category = "Bushes")
+    TArray<UBlueprint*> bushes;
+    UPROPERTY(EditAnywhere, Category = "Bushes")
+    int bushNum;
     
+    UPROPERTY(EditAnywhere, Category = "grass and flowers")
+    TArray<UBlueprint*> grassFlowers;
     
-    
+    UPROPERTY(EditAnywhere, Category = "grass and flowers")
+    int grassNum;
+    UPROPERTY(EditAnywhere, Category = "grass and flowers")
+    int grassCenter;
     
 };
