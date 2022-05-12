@@ -11,6 +11,7 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    chooseexistdb.cpp \
     choosenewtagtype.cpp \
     dboperator.cpp \
     main.cpp \
@@ -18,12 +19,14 @@ SOURCES += \
     plant.cpp
 
 HEADERS += \
+    chooseexistdb.h \
     choosenewtagtype.h \
     dboperator.h \
     mainwindow.h \
     plant.h
 
 FORMS += \
+    chooseexistdb.ui \
     choosenewtagtype.ui \
     mainwindow.ui
 
