@@ -10,3 +10,6 @@ Plugins/tets/Binaries/
 Plugins/tets/Intermediate/
 Plugins/CustomFilterPlugin/Binaries/
 Plugins/CustomFilterPlugin//Intermediate/
+Build/
+.DS_Store
+Plugins/.DS_Store

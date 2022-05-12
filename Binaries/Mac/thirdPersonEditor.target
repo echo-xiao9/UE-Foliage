@@ -44,19 +44,11 @@
 			"Type": "RequiredResource"
 		},
 		{
-			"Path": "$(ProjectDir)/Plugins/FacePlugin/Binaries/Mac/UE4Editor-FacePlugin.dylib",
+			"Path": "$(ProjectDir)/Plugins/FoliageGenerator/Binaries/Mac/UE4Editor-tets.dylib",
 			"Type": "DynamicLibrary"
 		},
 		{
-			"Path": "$(ProjectDir)/Plugins/FacePlugin/Binaries/Mac/UE4Editor-FacePlugin.dSYM",
-			"Type": "SymbolFile"
-		},
-		{
-			"Path": "$(ProjectDir)/Plugins/tets/Binaries/Mac/UE4Editor-tets.dylib",
-			"Type": "DynamicLibrary"
-		},
-		{
-			"Path": "$(ProjectDir)/Plugins/tets/Binaries/Mac/UE4Editor-tets.dSYM",
+			"Path": "$(ProjectDir)/Plugins/FoliageGenerator/Binaries/Mac/UE4Editor-tets.dSYM",
 			"Type": "SymbolFile"
 		},
 		{
@@ -2272,11 +2264,7 @@
 			"Type": "RequiredResource"
 		},
 		{
-			"Path": "$(ProjectDir)/Plugins/FacePlugin/Binaries/Mac/UE4Editor.modules",
-			"Type": "RequiredResource"
-		},
-		{
-			"Path": "$(ProjectDir)/Plugins/tets/Binaries/Mac/UE4Editor.modules",
+			"Path": "$(ProjectDir)/Plugins/FoliageGenerator/Binaries/Mac/UE4Editor.modules",
 			"Type": "RequiredResource"
 		},
 		{
@@ -2734,11 +2722,7 @@
 			"Type": "UFS"
 		},
 		{
-			"Path": "$(ProjectDir)/Plugins/FacePlugin/FacePlugin.uplugin",
-			"Type": "UFS"
-		},
-		{
-			"Path": "$(ProjectDir)/Plugins/tets/tets.uplugin",
+			"Path": "$(ProjectDir)/Plugins/FoliageGenerator/tets.uplugin",
 			"Type": "UFS"
 		},
 		{
