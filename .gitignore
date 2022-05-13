@@ -1,2 +1,10 @@
 Intermediate/
+Binaries/
+Saved/
+thirdPerson.xcworkspace
+DerivedDataCache/
+.vs/
+thirdPerson.sln
 Tag_Manager/qt/DBManager/build-DBManager-Desktop_Qt_6_3_0_MinGW_64_bit-Debug/
+Plugins/tets/Binaries/
+Plugins/tets/Intermediate/
