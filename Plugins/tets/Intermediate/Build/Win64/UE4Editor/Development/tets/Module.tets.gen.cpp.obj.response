@@ -32,7 +32,7 @@
 /wd4244
 /wd4838
 /I .
-/I E:\WorksAndStudying\2021Spring\prp_vr\MyProj9\Plugins\tets\Source\tets\Private
+/I "E:\Unreal Projects\FoliagePlugin\UE-Foliage\Plugins\tets\Source\tets\Private"
 /I Runtime
 /I Runtime\Projects\Public
 /I Runtime\TraceLog\Public
@@ -232,9 +232,11 @@
 /I ..\Intermediate\Build\Win64\UE4Editor\Inc\AIModule
 /I Runtime\AIModule\Public
 /I Runtime\AIModule\Classes
-/I E:\WorksAndStudying\2021Spring\prp_vr\MyProj9\Plugins\tets\Intermediate\Build\Win64\UE4Editor\Inc\tets
-/I E:\WorksAndStudying\2021Spring\prp_vr\MyProj9\Plugins\tets\Source
-/I E:\WorksAndStudying\2021Spring\prp_vr\MyProj9\Plugins\tets\Source\tets\Public
+/I "E:\Unreal Projects\FoliagePlugin\UE-Foliage\Plugins\tets\Intermediate\Build\Win64\UE4Editor\Inc\tets"
+/I "E:\Unreal Projects\FoliagePlugin\UE-Foliage\Plugins\tets\Source"
+/I "E:\Unreal Projects\FoliagePlugin\UE-Foliage\Plugins\tets\Source\tets\Public"
+/I ..\Intermediate\Build\Win64\UE4Editor\Inc\JsonUtilities
+/I Runtime\JsonUtilities\Public
 /I ThirdParty\PhysX3\PxShared\include
 /I ThirdParty\PhysX3\PxShared\include\cudamanager
 /I ThirdParty\PhysX3\PxShared\include\filebuf
@@ -258,18 +260,18 @@
 /I ThirdParty\PhysX3\APEX_1.4\shared\general\RenderDebug\public
 /I ThirdParty\PhysX3\APEX_1.4\shared\general\PairFilter\include
 /I ThirdParty\PhysX3\APEX_1.4\shared\internal\include
-/I D:\apps\VisualStudio2022\VS\VC\Tools\MSVC\14.30.30705\INCLUDE
+/I "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.31.31103\INCLUDE"
 /I "C:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\include\um"
-/I "D:\Windows Kits\10\include\10.0.19041.0\ucrt"
-/I "D:\Windows Kits\10\include\10.0.19041.0\shared"
-/I "D:\Windows Kits\10\include\10.0.19041.0\um"
-/I "D:\Windows Kits\10\include\10.0.19041.0\winrt"
-/FI"E:\WorksAndStudying\2021Spring\prp_vr\MyProj9\Intermediate\Build\Win64\MyProj9Editor\Development\UnrealEd\SharedPCH.UnrealEd.ShadowErrors.h"
-/Yu"E:\WorksAndStudying\2021Spring\prp_vr\MyProj9\Intermediate\Build\Win64\MyProj9Editor\Development\UnrealEd\SharedPCH.UnrealEd.ShadowErrors.h"
-/Fp"E:\WorksAndStudying\2021Spring\prp_vr\MyProj9\Intermediate\Build\Win64\MyProj9Editor\Development\UnrealEd\SharedPCH.UnrealEd.ShadowErrors.h.pch"
-"E:\WorksAndStudying\2021Spring\prp_vr\MyProj9\Plugins\tets\Intermediate\Build\Win64\UE4Editor\Development\tets\Module.tets.gen.cpp"
-/FI"E:\WorksAndStudying\2021Spring\prp_vr\MyProj9\Plugins\tets\Intermediate\Build\Win64\UE4Editor\Development\tets\Definitions.tets.h"
-/Fo"E:\WorksAndStudying\2021Spring\prp_vr\MyProj9\Plugins\tets\Intermediate\Build\Win64\UE4Editor\Development\tets\Module.tets.gen.cpp.obj"
+/I "C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\ucrt"
+/I "C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\shared"
+/I "C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\um"
+/I "C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\winrt"
+/FI"E:\Unreal Projects\FoliagePlugin\UE-Foliage\Intermediate\Build\Win64\thirdPersonEditor\Development\UnrealEd\SharedPCH.UnrealEd.ShadowErrors.h"
+/Yu"E:\Unreal Projects\FoliagePlugin\UE-Foliage\Intermediate\Build\Win64\thirdPersonEditor\Development\UnrealEd\SharedPCH.UnrealEd.ShadowErrors.h"
+/Fp"E:\Unreal Projects\FoliagePlugin\UE-Foliage\Intermediate\Build\Win64\thirdPersonEditor\Development\UnrealEd\SharedPCH.UnrealEd.ShadowErrors.h.pch"
+"E:\Unreal Projects\FoliagePlugin\UE-Foliage\Plugins\tets\Intermediate\Build\Win64\UE4Editor\Development\tets\Module.tets.gen.cpp"
+/FI"E:\Unreal Projects\FoliagePlugin\UE-Foliage\Plugins\tets\Intermediate\Build\Win64\UE4Editor\Development\tets\Definitions.tets.h"
+/Fo"E:\Unreal Projects\FoliagePlugin\UE-Foliage\Plugins\tets\Intermediate\Build\Win64\UE4Editor\Development\tets\Module.tets.gen.cpp.obj"
 /TP
 /GR-
 /W4

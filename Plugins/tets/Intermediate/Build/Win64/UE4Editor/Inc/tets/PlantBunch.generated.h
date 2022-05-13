@@ -13,10 +13,10 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 #endif
 #define TETS_PlantBunch_generated_h
 
-#define MyProj9_Plugins_tets_Source_tets_Public_PlantBunch_h_16_SPARSE_DATA
-#define MyProj9_Plugins_tets_Source_tets_Public_PlantBunch_h_16_RPC_WRAPPERS
-#define MyProj9_Plugins_tets_Source_tets_Public_PlantBunch_h_16_RPC_WRAPPERS_NO_PURE_DECLS
-#define MyProj9_Plugins_tets_Source_tets_Public_PlantBunch_h_16_INCLASS_NO_PURE_DECLS \
+#define UE_Foliage_Plugins_tets_Source_tets_Public_PlantBunch_h_16_SPARSE_DATA
+#define UE_Foliage_Plugins_tets_Source_tets_Public_PlantBunch_h_16_RPC_WRAPPERS
+#define UE_Foliage_Plugins_tets_Source_tets_Public_PlantBunch_h_16_RPC_WRAPPERS_NO_PURE_DECLS
+#define UE_Foliage_Plugins_tets_Source_tets_Public_PlantBunch_h_16_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesUPlantBunch(); \
 	friend struct Z_Construct_UClass_UPlantBunch_Statics; \
@@ -25,7 +25,7 @@ public: \
 	DECLARE_SERIALIZER(UPlantBunch)
 
 
-#define MyProj9_Plugins_tets_Source_tets_Public_PlantBunch_h_16_INCLASS \
+#define UE_Foliage_Plugins_tets_Source_tets_Public_PlantBunch_h_16_INCLASS \
 private: \
 	static void StaticRegisterNativesUPlantBunch(); \
 	friend struct Z_Construct_UClass_UPlantBunch_Statics; \
@@ -34,7 +34,7 @@ public: \
 	DECLARE_SERIALIZER(UPlantBunch)
 
 
-#define MyProj9_Plugins_tets_Source_tets_Public_PlantBunch_h_16_STANDARD_CONSTRUCTORS \
+#define UE_Foliage_Plugins_tets_Source_tets_Public_PlantBunch_h_16_STANDARD_CONSTRUCTORS \
 	/** Standard constructor, called after all reflected properties have been initialized */ \
 	NO_API UPlantBunch(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get()); \
 	DEFINE_DEFAULT_OBJECT_INITIALIZER_CONSTRUCTOR_CALL(UPlantBunch) \
@@ -47,7 +47,7 @@ private: \
 public:
 
 
-#define MyProj9_Plugins_tets_Source_tets_Public_PlantBunch_h_16_ENHANCED_CONSTRUCTORS \
+#define UE_Foliage_Plugins_tets_Source_tets_Public_PlantBunch_h_16_ENHANCED_CONSTRUCTORS \
 	/** Standard constructor, called after all reflected properties have been initialized */ \
 	NO_API UPlantBunch(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get()) : Super(ObjectInitializer) { }; \
 private: \
@@ -60,28 +60,28 @@ public: \
 	DEFINE_DEFAULT_OBJECT_INITIALIZER_CONSTRUCTOR_CALL(UPlantBunch)
 
 
-#define MyProj9_Plugins_tets_Source_tets_Public_PlantBunch_h_16_PRIVATE_PROPERTY_OFFSET
-#define MyProj9_Plugins_tets_Source_tets_Public_PlantBunch_h_12_PROLOG
-#define MyProj9_Plugins_tets_Source_tets_Public_PlantBunch_h_16_GENERATED_BODY_LEGACY \
+#define UE_Foliage_Plugins_tets_Source_tets_Public_PlantBunch_h_16_PRIVATE_PROPERTY_OFFSET
+#define UE_Foliage_Plugins_tets_Source_tets_Public_PlantBunch_h_12_PROLOG
+#define UE_Foliage_Plugins_tets_Source_tets_Public_PlantBunch_h_16_GENERATED_BODY_LEGACY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	MyProj9_Plugins_tets_Source_tets_Public_PlantBunch_h_16_PRIVATE_PROPERTY_OFFSET \
-	MyProj9_Plugins_tets_Source_tets_Public_PlantBunch_h_16_SPARSE_DATA \
-	MyProj9_Plugins_tets_Source_tets_Public_PlantBunch_h_16_RPC_WRAPPERS \
-	MyProj9_Plugins_tets_Source_tets_Public_PlantBunch_h_16_INCLASS \
-	MyProj9_Plugins_tets_Source_tets_Public_PlantBunch_h_16_STANDARD_CONSTRUCTORS \
+	UE_Foliage_Plugins_tets_Source_tets_Public_PlantBunch_h_16_PRIVATE_PROPERTY_OFFSET \
+	UE_Foliage_Plugins_tets_Source_tets_Public_PlantBunch_h_16_SPARSE_DATA \
+	UE_Foliage_Plugins_tets_Source_tets_Public_PlantBunch_h_16_RPC_WRAPPERS \
+	UE_Foliage_Plugins_tets_Source_tets_Public_PlantBunch_h_16_INCLASS \
+	UE_Foliage_Plugins_tets_Source_tets_Public_PlantBunch_h_16_STANDARD_CONSTRUCTORS \
 public: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
 
-#define MyProj9_Plugins_tets_Source_tets_Public_PlantBunch_h_16_GENERATED_BODY \
+#define UE_Foliage_Plugins_tets_Source_tets_Public_PlantBunch_h_16_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	MyProj9_Plugins_tets_Source_tets_Public_PlantBunch_h_16_PRIVATE_PROPERTY_OFFSET \
-	MyProj9_Plugins_tets_Source_tets_Public_PlantBunch_h_16_SPARSE_DATA \
-	MyProj9_Plugins_tets_Source_tets_Public_PlantBunch_h_16_RPC_WRAPPERS_NO_PURE_DECLS \
-	MyProj9_Plugins_tets_Source_tets_Public_PlantBunch_h_16_INCLASS_NO_PURE_DECLS \
-	MyProj9_Plugins_tets_Source_tets_Public_PlantBunch_h_16_ENHANCED_CONSTRUCTORS \
+	UE_Foliage_Plugins_tets_Source_tets_Public_PlantBunch_h_16_PRIVATE_PROPERTY_OFFSET \
+	UE_Foliage_Plugins_tets_Source_tets_Public_PlantBunch_h_16_SPARSE_DATA \
+	UE_Foliage_Plugins_tets_Source_tets_Public_PlantBunch_h_16_RPC_WRAPPERS_NO_PURE_DECLS \
+	UE_Foliage_Plugins_tets_Source_tets_Public_PlantBunch_h_16_INCLASS_NO_PURE_DECLS \
+	UE_Foliage_Plugins_tets_Source_tets_Public_PlantBunch_h_16_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
@@ -89,7 +89,7 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 template<> TETS_API UClass* StaticClass<class UPlantBunch>();
 
 #undef CURRENT_FILE_ID
-#define CURRENT_FILE_ID MyProj9_Plugins_tets_Source_tets_Public_PlantBunch_h
+#define CURRENT_FILE_ID UE_Foliage_Plugins_tets_Source_tets_Public_PlantBunch_h
 
 
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
