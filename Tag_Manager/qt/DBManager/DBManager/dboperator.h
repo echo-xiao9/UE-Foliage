@@ -18,6 +18,7 @@ public:
     void closeDB();
     bool isOpen();
     QVector<QString> readAllPlantNames();
+    QVector<QString> searchPlantNames(QString search);
     plant getOnePlantInfo(QString plantName);
     bool saveTag(int tagID, QString key, QString value);
     bool saveTag(int tagID, QString key, float value);
@@ -25,8 +26,11 @@ public:
     bool addTag(QString plantName, QString key, float value);
     bool deleteTag(int tagID, bool isStringTag);
     bool saveHierarchy(QString plantName, int hierarchy);
+    bool saveImage(QString plantName, QByteArray img, QString fmt);
     bool deletePlant(QString plantName);
     bool addPlant(QString plantName);
+    QString getAssetDir();
+    bool setAssetDir(QString dir);
 };
 
 #endif // DBOPERATOR_H

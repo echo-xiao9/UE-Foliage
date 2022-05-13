@@ -3,6 +3,9 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QFile>
+#include <QBuffer>
+
 
 MainWindow* MainWindow::ptrToMainWindow = nullptr;
 MainWindow::MainWindow(QWidget *parent)
@@ -13,13 +16,51 @@ MainWindow::MainWindow(QWidget *parent)
 {
     MainWindow::ptrToMainWindow = this;
     ui->setupUi(this);
-    chooseDBRootDir();
+    setRootDir();
     dbOperator = new DBOperator();
+    ui->imgLabel->installEventFilter(this);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::setRootDir(){
+    auto dir = readDBBaseDir();
+    if(dir == ""){
+        chooseDBRootDir();
+    }
+    else{
+        DBDir = dir;
+    }
+}
+
+
+QString MainWindow::readDBBaseDir(){
+    QFile   aFile("./DBDir.txt");
+    if (!aFile.exists()) //文件不存在
+        return "";
+    if (!aFile.open(QIODevice::ReadOnly | QIODevice::Text))
+        return "";
+    QString dir = QString(aFile.readAll());
+    aFile.close();
+    QFileInfo fileInfo(dir);
+    if(!fileInfo.isDir()){
+        return "";
+    }
+    return dir;
+}
+
+void MainWindow::writeDBBaseDir(QString dir){
+    QFile aFile("./DBDir.txt");
+    if(aFile.exists()){
+        aFile.resize(0);
+    }
+    aFile.open(QIODevice::WriteOnly | QIODevice::Text);
+    QByteArray  strBytes=dir.toUtf8();
+    aFile.write(strBytes,strBytes.length());  //写入文件
+    aFile.close();
 }
 
 void MainWindow::chooseDBRootDir(){
@@ -32,18 +73,39 @@ void MainWindow::chooseDBRootDir(){
             QMessageBox::critical(this, "路径不存在！", "请重新选择路径");
         }
     }while(!flag);
-    do{
-        assetDir = QFileDialog::getExistingDirectory(this, "选择资源根路径","",QFileDialog::ShowDirsOnly);
-        QFileInfo fileInfo(assetDir);
-        flag = fileInfo.isDir();
-        if(!flag){
-            QMessageBox::critical(this, "路径不存在！", "请重新选择路径");
-        }
-    }while(!flag);
+    writeDBBaseDir(DBDir);
+
 }
 
 void MainWindow::openDB(){
-    QString projName = QInputDialog::getText(this, tr("输入项目名"), tr("请输入项目名："), QLineEdit::Normal,tr(""));
+    QDir dir(DBDir);
+    QStringList nameFilters;
+    nameFilters << "*.db";
+    QStringList files = dir.entryList(nameFilters, QDir::Files|QDir::Readable, QDir::Name);
+
+    QVector<QString> projNames;
+    for(auto file: files){
+        projNames.append(file.mid(0, file.size() - 3));
+    }
+
+
+    auto chooseDialog = new ChooseExistDB(this);
+    chooseDialog->setFilenames(projNames);
+    int ret=chooseDialog->exec () ;// 以模态方式显示对话框
+    QString projName = "";
+    if (ret==QDialog::Accepted)
+    { //OK按钮被按下，获取对话框上的输入，设置行数和列数
+        projName = chooseDialog->getProjName();
+        delete chooseDialog;
+    }
+    else{
+        delete chooseDialog;
+        return;
+    }
+//    projName = QInputDialog::getText(this, tr("输入项目名"), tr("请输入项目名："), QLineEdit::Normal,tr(""));
+    if(projName == ""){
+        return;
+    }
      QFileInfo fileInfo(QFile(DBDir+ "/" + projName + ".db"));
     if(!fileInfo.isFile()){
         QMessageBox::critical(this, "数据库文件不存在！", "请检查您输入的项目名");
@@ -53,27 +115,42 @@ void MainWindow::openDB(){
         QMessageBox::critical(this, "打开失败", "打开数据库失败");
         return;
     }
+    assetDir = dbOperator->getAssetDir();
+    qDebug() << assetDir;
     currentPlantList = dbOperator->readAllPlantNames();
     updatePlantListDisplay();
     ui->addAsset->setEnabled(true);
     ui->deletAsset->setEnabled(true);
+    ui->searchPlant->setEnabled(true);
+    ui->resetSearch->setEnabled(true);
+    ui->setAssetDir->setEnabled(true);
 }
 
 void MainWindow::newDB(){
+
     QString projName = QInputDialog::getText(this, tr("输入项目名"), tr("请输入项目名："), QLineEdit::Normal,tr(""));
      QFileInfo fileInfo(QFile(DBDir+ "/" + projName + ".db"));
     if(fileInfo.isFile()){
         QMessageBox::critical(this, "数据库文件已经存在！", "请检查您输入的项目名");
         return;
     }
+    QString newAssetDir = setAssetDir();
+    if(newAssetDir == ""){
+        return;
+    }
     if(dbOperator->newDB(DBDir+ "/" + projName + ".db") == false){
         QMessageBox::critical(this, "创建失败", "创建数据库失败");
         return;
     }
+    assetDir = newAssetDir;
+    dbOperator->setAssetDir(assetDir);
     currentPlantList = dbOperator->readAllPlantNames();
     updatePlantListDisplay();
     ui->addAsset->setEnabled(true);
     ui->deletAsset->setEnabled(true);
+    ui->searchPlant->setEnabled(true);
+    ui->resetSearch->setEnabled(true);
+    ui->setAssetDir->setEnabled(true);
 }
 
 void MainWindow::MessageBoxForDebug(QString title, QString content){
@@ -99,12 +176,14 @@ void MainWindow::on_nameList_currentTextChanged(const QString &currentText)
         ui->saveName->setEnabled(false);
         ui->addTag->setEnabled(false);
         ui->deleteTag->setEnabled(false);
+        this->imgLabelEnabled = false;
     }
     else{
         currentPlant = dbOperator->getOnePlantInfo(currentText);
         ui->saveName->setEnabled(true);
         ui->addTag->setEnabled(true);
         ui->deleteTag->setEnabled(true);
+        this->imgLabelEnabled = true;
     }
     updatePlantDisplay();
 }
@@ -123,6 +202,15 @@ void MainWindow::updatePlantDisplay(){
 
     ui->NameText->setText(currentPlant.name);
     ui->hierarchyText->setText(QString::number(currentPlant.hierarchy));
+    QPixmap pixmap;
+    if(currentPlant.image.size() == 0 || pixmap.loadFromData(currentPlant.image,currentPlant.imageFmt.toStdString().c_str()) == false){
+        qDebug()<< "no img available";
+        ui->imgLabel->setPixmap(QPixmap(":/Image/blackScreen.png"));
+    }
+    else{
+        pixmap = pixmap.scaled(300, 300,  Qt::KeepAspectRatio);
+        ui->imgLabel->setPixmap(pixmap);
+    }
     for(auto& tag : currentPlant.tags){
         QListWidgetItem* item = new QListWidgetItem();
         item->setData(Qt::UserRole + 0, tag.tagID);
@@ -380,6 +468,7 @@ void MainWindow::on_addAsset_clicked()
         return;
     }
     QString newAssetName = QFileDialog::getOpenFileName(this, "选择打开的文件", this->assetDir);
+    if(newAssetName == "")return;
     if(!newAssetName.contains(this->assetDir)){
         QMessageBox::critical(this, "添加失败！","要添加的资源不在当前资源目录中");
         return;
@@ -400,7 +489,7 @@ void MainWindow::on_setDBDir_triggered()
     bool flag;
     QString tmpDBDir;
     do{
-        tmpDBDir = QFileDialog::getExistingDirectory(this, "选择数据库根路径","",QFileDialog::ShowDirsOnly);
+        tmpDBDir = QFileDialog::getExistingDirectory(this, "选择数据库根路径",DBDir,QFileDialog::ShowDirsOnly);
         if(tmpDBDir == "")
             return;
         QFileInfo fileInfo(tmpDBDir);
@@ -417,8 +506,9 @@ void MainWindow::on_setAssetDir_triggered()
 {
     bool flag;
     QString tmpAssetDir;
+    QString originDir = dbOperator->getAssetDir();
     do{
-        tmpAssetDir = QFileDialog::getExistingDirectory(this, "选择资源根路径","",QFileDialog::ShowDirsOnly);
+        tmpAssetDir = QFileDialog::getExistingDirectory(this, "选择资源根路径",originDir,QFileDialog::ShowDirsOnly);
         if(tmpAssetDir == "")
             return;
         QFileInfo fileInfo(tmpAssetDir);
@@ -428,5 +518,71 @@ void MainWindow::on_setAssetDir_triggered()
         }
     }while(!flag);
     assetDir = tmpAssetDir;
+    dbOperator->setAssetDir(assetDir);
 }
 
+QString MainWindow::setAssetDir(){
+    bool flag;
+    QString tmpAssetDir;
+    QString originDir = dbOperator->getAssetDir();
+    do{
+        tmpAssetDir = QFileDialog::getExistingDirectory(this, "选择资源根路径",originDir,QFileDialog::ShowDirsOnly);
+        if(tmpAssetDir == ""){
+            return "";
+        }
+        QFileInfo fileInfo(tmpAssetDir);
+        flag = fileInfo.isDir();
+        if(!flag){
+            QMessageBox::critical(this, "路径不存在！", "请重新选择路径");
+        }
+    }while(!flag);
+    return tmpAssetDir;
+}
+
+
+void MainWindow::on_searchPlant_clicked()
+{
+    currentPlantList = dbOperator->searchPlantNames(ui->searchName->text());
+    updatePlantListDisplay();
+}
+
+
+void MainWindow::on_resetSearch_clicked()
+{
+    ui->searchName->setText("");
+    currentPlantList = dbOperator->readAllPlantNames();
+    updatePlantListDisplay();
+}
+
+bool MainWindow::eventFilter(QObject *obj, QEvent *event){
+    if(obj == ui->imgLabel)
+    {
+         if (event->type() == QEvent::MouseButtonPress)
+         {
+            if(this->imgLabelEnabled){
+                QString curPath=assetDir;//获取系统当前目录
+                QString dlgTitle="选择一张图片"; //对话框标题
+                QString imgFilename=QFileDialog::getOpenFileName(this,dlgTitle,curPath);
+                QFileInfo fileInfo(imgFilename);
+                if(!fileInfo.isFile()){
+                    return true;
+                }
+                QString fmt = fileInfo.suffix();
+                QFile imgFile(imgFilename);
+                if (!imgFile.open(QIODevice::ReadOnly | QIODevice::Truncate))
+                    return true;
+                auto imgByteArray = imgFile.readAll();
+                if(!(dbOperator->saveImage(currentPlant.name, imgByteArray,fmt))){
+                    QMessageBox::critical(this, "保存失败！", "请检查您的图片文件");
+                }
+                else{
+                    currentPlant = dbOperator->getOnePlantInfo(currentPlant.name);
+                    updatePlantDisplay();
+                }
+
+            }
+            return true;
+         }
+    }
+    return false;
+}

@@ -4,8 +4,10 @@
 #include <QMainWindow>
 #include <dboperator.h>
 #include <QListWidgetItem>
+#include <QMouseEvent>
 #include "plant.h"
 #include "choosenewtagtype.h"
+#include "chooseexistdb.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -24,6 +26,7 @@ public:
     DBOperator* dbOperator;
     bool isNextNewTagString = true;
     bool isChildDialogAccpet = true;
+    bool eventFilter(QObject *obj, QEvent *event);
 
 private slots:
     void on_newFile_triggered();
@@ -53,6 +56,10 @@ private slots:
 
     void on_setAssetDir_triggered();
 
+    void on_searchPlant_clicked();
+
+    void on_resetSearch_clicked();
+
 private:
     plant currentPlant;
     const plant zombiePlant;
@@ -61,8 +68,13 @@ private:
     Ui::MainWindow *ui;
     QString DBDir;
     QString assetDir;
+    bool imgLabelEnabled = false;
     void chooseDBRootDir();
     void updatePlantListDisplay();
     void updatePlantDisplay();
+    QString readDBBaseDir();
+    void writeDBBaseDir(QString dir);
+    void setRootDir();
+    QString setAssetDir();
 };
 #endif // MAINWINDOW_H

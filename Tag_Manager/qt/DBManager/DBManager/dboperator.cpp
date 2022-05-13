@@ -50,6 +50,47 @@ bool DBOperator::newDB(QString file){
 
 }
 
+QString DBOperator::getAssetDir(){
+    if(!open){
+        qDebug() << "not open";
+        return "";
+    }
+    QString select_all_sql = "select dir from projectDir";
+    QSqlQuery sql_query;
+    sql_query.prepare(select_all_sql);
+    if(!sql_query.exec())
+    {
+        qDebug()<<sql_query.lastError();
+    }
+    else
+    {
+        while(sql_query.next())
+        {
+            QString name = sql_query.value(0).toString();
+            qDebug()<<QString("name: %1").arg(name);
+            return name;
+        }
+    }
+    return "";
+}
+
+bool DBOperator::setAssetDir(QString dir){
+    QString update_sql = "insert or replace into projectdir (id, dir) values (1,:dir)";
+    QSqlQuery sql_query;
+    sql_query.prepare(update_sql);
+    sql_query.bindValue(":dir", dir);
+    if(!sql_query.exec())
+    {
+        qDebug() << sql_query.lastError();
+        return false;
+    }
+    else
+    {
+        qDebug() << "updated!";
+        return true;
+    }
+}
+
 int DBOperator::excute_sql_file(QString path)
 {
     std::string stdStrPath = path.toStdString();
@@ -68,11 +109,11 @@ int DBOperator::excute_sql_file(QString path)
     QStringList qstrlist_sql =  qstr_file_data.split(";");
     for (int i = 0; i < qstrlist_sql.size() - 1; i++) {
         QString qstr_sql_part = qstrlist_sql.at(i).toUtf8();
+        qDebug() << qstr_sql_part;
         bool sql_result = qsql.exec(qstr_sql_part);
         if (!sql_result) {
             QSqlError sql_error = qsql.lastError();
-            //std::cout << sql_error.text().toStdString() << std::endl;
-            //std::cout << sql_error.number() << std::endl;
+            qDebug() << sql_error.text() ;
             iRet = -1;
             break;
         }
@@ -104,6 +145,31 @@ QVector<QString> DBOperator::readAllPlantNames(){
     return result;
 }
 
+QVector<QString> DBOperator::searchPlantNames(QString search){
+    QVector<QString> result;
+    if(!open){
+        return result;
+    }
+    QString select_all_sql = "select name from plant where name like :name";
+    QSqlQuery sql_query;
+    sql_query.prepare(select_all_sql);
+    sql_query.bindValue(":name", QString("%%1%").arg(search));
+    if(!sql_query.exec())
+    {
+        qDebug()<<sql_query.lastError();
+    }
+    else
+    {
+        while(sql_query.next())
+        {
+            QString name = sql_query.value(0).toString();
+            qDebug()<<QString("name: %1").arg(name);
+            result.append(name);
+        }
+    }
+    return result;
+}
+
 plant DBOperator::getOnePlantInfo(QString plantName){
     plant result;
     if(!open){
@@ -111,7 +177,7 @@ plant DBOperator::getOnePlantInfo(QString plantName){
     }
     result.name = plantName;
     {
-        QString select_sql = "select distinct id, hierarchy from plant where name = :name";
+        QString select_sql = "select distinct plant.id, plant.hierarchy, image.imageBin, image.imageformat from plant, image where plant.name = :name and image.plantid = plant.id";
         QSqlQuery sql_query;
         sql_query.prepare(select_sql);
         sql_query.bindValue(":name",plantName);
@@ -125,9 +191,14 @@ plant DBOperator::getOnePlantInfo(QString plantName){
             {
                 int id = sql_query.value(0).toInt();
                 int hierarchy = sql_query.value(1).toInt();
+                QByteArray img = sql_query.value(2).toByteArray();
+                QString fmt = sql_query.value(3).toString();
                 qDebug()<<QString("name: %1").arg(hierarchy);
+                qDebug() << img.size();
                 result.plantID = id;
                 result.hierarchy = hierarchy;
+                result.image = img;
+                result.imageFmt = fmt;
             }
         }
     }
@@ -173,6 +244,7 @@ plant DBOperator::getOnePlantInfo(QString plantName){
             }
         }
     }
+
 
 
     return result;
@@ -275,6 +347,7 @@ bool DBOperator::saveHierarchy(QString plantName, int hierarchy){
     QSqlQuery sql_query;
     sql_query.prepare(update_sql);
     sql_query.bindValue(":hierarchy",hierarchy);
+    qDebug() << QString("hierarchy is %1").arg(hierarchy);
     sql_query.bindValue(":name",plantName);
     if(!sql_query.exec())
     {
@@ -286,6 +359,26 @@ bool DBOperator::saveHierarchy(QString plantName, int hierarchy){
         qDebug() << "updated!";
         return true;
     }
+}
+
+bool DBOperator::saveImage(QString plantName, QByteArray img, QString fmt){
+    QString update_Sql = "insert or replace into image (imagebin, imageformat, plantid) values (:img, :fmt, (select id from plant where name = :name))";
+    QSqlQuery sql_query;
+    sql_query.prepare(update_Sql);
+    sql_query.bindValue(":img",img);
+    sql_query.bindValue(":fmt",fmt);
+    sql_query.bindValue(":name",plantName);
+    if(!sql_query.exec())
+    {
+        qDebug() << sql_query.lastError();
+        return false;
+    }
+    else
+    {
+        qDebug() << "updated!";
+        return true;
+    }
+
 }
 
 bool DBOperator::deletePlant(QString plantName){
@@ -306,19 +399,36 @@ bool DBOperator::deletePlant(QString plantName){
 }
 
 bool DBOperator::addPlant(QString plantName){
-    QString add_sql = "insert into plant (name, hierarchy) values (:name, 0)";
-    QSqlQuery sql_query;
-    sql_query.prepare(add_sql);
-    sql_query.bindValue(":name",plantName);
-    if(!sql_query.exec())
     {
-        qDebug() << sql_query.lastError();
-        return false;
+        QString add_sql = "insert into plant (name, hierarchy) values (:name, 0)";
+        QSqlQuery sql_query;
+        sql_query.prepare(add_sql);
+        sql_query.bindValue(":name",plantName);
+        if(!sql_query.exec())
+        {
+            qDebug() << sql_query.lastError();
+            return false;
+        }
+        else
+        {
+            qDebug() << "Inserted!";
+        }
     }
-    else
     {
-        qDebug() << "Inserted!";
-        return true;
+        QString add_sql = "insert into image (plantid) values ((select id from plant where name = :name))";
+        QSqlQuery sql_query;
+        sql_query.prepare(add_sql);
+        sql_query.bindValue(":name",plantName);
+        if(!sql_query.exec())
+        {
+            qDebug() << sql_query.lastError();
+            return false;
+        }
+        else
+        {
+            qDebug() << "Image Inserted!";
+            return true;
+        }
     }
 }
 

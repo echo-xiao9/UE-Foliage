@@ -19,6 +19,8 @@ public:
         bool inDatabase;
     };
     QVector<tag> tags;
+    QByteArray image;
+    QString imageFmt;
 };
 
 #endif // PLANT_H
