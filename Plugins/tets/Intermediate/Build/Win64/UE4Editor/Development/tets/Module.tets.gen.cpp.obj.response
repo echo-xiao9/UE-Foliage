@@ -235,6 +235,8 @@
 /I "E:\Unreal Projects\FoliagePlugin\UE-Foliage\Plugins\tets\Intermediate\Build\Win64\UE4Editor\Inc\tets"
 /I "E:\Unreal Projects\FoliagePlugin\UE-Foliage\Plugins\tets\Source"
 /I "E:\Unreal Projects\FoliagePlugin\UE-Foliage\Plugins\tets\Source\tets\Public"
+/I ..\Intermediate\Build\Win64\UE4Editor\Inc\JsonUtilities
+/I Runtime\JsonUtilities\Public
 /I ThirdParty\PhysX3\PxShared\include
 /I ThirdParty\PhysX3\PxShared\include\cudamanager
 /I ThirdParty\PhysX3\PxShared\include\filebuf

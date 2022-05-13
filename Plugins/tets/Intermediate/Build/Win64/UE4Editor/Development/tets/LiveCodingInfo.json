@@ -7,11 +7,14 @@
 			"PlantManagerDetailPanel.cpp.obj",
 			"tets.cpp.obj",
 			"tetsCommands.cpp.obj",
-			"tetsStyle.cpp.obj"
+			"tetsStyle.cpp.obj",
+			"DBApi.cpp.obj",
+			"PlantRecommend.cpp.obj"
 		],
 		"Module.tets.gen.cpp.obj": [
-			"PlantBunchManager.gen.cpp.obj",
 			"PlantBunch.gen.cpp.obj",
+			"PlantBunchManager.gen.cpp.obj",
+			"PlantRecommend.gen.cpp.obj",
 			"tets.init.gen.cpp.obj"
 		]
 	}
