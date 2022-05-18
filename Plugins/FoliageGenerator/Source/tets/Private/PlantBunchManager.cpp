@@ -68,13 +68,27 @@ void APlantBunchManager::GenerateSingle(FVector centerPos,float radius, float an
             break;
         }
         case 1:{
+            // bush
             int chosenBush = getRandomInt(0,plantBunch->bushes.Num()-1);
             GetWorld()->SpawnActor<AActor>(plantBunch->bushes[chosenBush]->GeneratedClass, spawnLocation0);
             break;
         }
         case 2:{
-            int chosenGrass = getRandomInt(0,plantBunch->grassFlowers.Num()-1);
-            GetWorld()->SpawnActor<AActor>(plantBunch->grassFlowers[chosenGrass]->GeneratedClass, spawnLocation0);
+            // grass
+            int chosenGrass = getRandomInt(0,plantBunch->grasses.Num()-1);
+            GetWorld()->SpawnActor<AActor>(plantBunch->grasses[chosenGrass]->GeneratedClass, spawnLocation0);
+            break;
+        }
+        case 3:{
+            // flower
+            int chosenFlower = getRandomInt(0,plantBunch->flowers.Num()-1);
+            GetWorld()->SpawnActor<AActor>(plantBunch->flowers[chosenFlower]->GeneratedClass, spawnLocation0);
+            break;
+        }
+        case 4:{
+            // stone
+            int chosenStone = getRandomInt(0,plantBunch->stones.Num()-1);
+            GetWorld()->SpawnActor<AActor>(plantBunch->stones[chosenStone]->GeneratedClass, spawnLocation0);
             break;
         }
         default:
@@ -144,12 +158,26 @@ void APlantBunchManager::Generate()
         float angle0 = GetRandomReal(0.0f, 6.28f);
         GenerateSingle(pos, radius0,angle0,1);
     }
-    // generate grasses and flowers
+    // generate grasses
     for (int i=0; i<plantBunch->grassNum; i++) {
         float randomR = GetRandomReal(0.0,1.0);
-        float radius0 = FMath::Pow(randomR, plantBunch->grassCenter) * radius;
+        float radius0 = FMath::Pow(randomR, plantBunch->center) * radius;
         float angle0 = GetRandomReal(0.0f, 6.28f);
         GenerateSingle(pos, radius0,angle0,2);
+    }
+    // generate flowers
+    for (int i=0; i<plantBunch->flowerNum; i++) {
+        float randomR = GetRandomReal(0.0,1.0);
+        float radius0 = FMath::Pow(randomR, plantBunch->center) * radius;
+        float angle0 = GetRandomReal(0.0f, 6.28f);
+        GenerateSingle(pos, radius0,angle0,3);
+    }
+    // generate stones
+    for (int i=0; i<plantBunch->stoneNum; i++) {
+        float randomR = GetRandomReal(0.0,1.0);
+        float radius0 = FMath::Pow(randomR, plantBunch->center) * radius;
+        float angle0 = GetRandomReal(0.0f, 6.28f);
+        GenerateSingle(pos, radius0,angle0,4);
     }
     
     
