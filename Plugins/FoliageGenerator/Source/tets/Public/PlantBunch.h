@@ -17,8 +17,6 @@ class TETS_API UPlantBunch: public UDataAsset
     
 public:
     
-    
-  
     UPROPERTY(EditAnywhere, Category = "settings")
     float radius;
     
