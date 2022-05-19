@@ -10,8 +10,19 @@
 #include "ToolMenus.h"
 #include "PlantBunchManager.h"
 #include "PlantManagerDetailPanel.h"
+#include "IImageWrapper.h"
+#include "IImageWrapperModule.h"
+#include "Misc/FileHelper.h"
+#include "ContentBrowserModule.h"
+#include "IContentBrowserSingleton.h"
+#include <Editor/UnrealEd/Public/ObjectTools.h>
+#include "ThumbnailRendering/TextureThumbnailRenderer.h"
+#include <Editor/UnrealEd/Classes/ThumbnailRendering/ThumbnailManager.h>
+#include "Developer/DesktopPlatform/Public/DesktopPlatformModule.h"
+#include "Developer/DesktopPlatform/Public/IDesktopPlatform.h"
 
-static const FName tetsTabName("tets");
+
+static const FName tetsTabName("Generate Thumbnail");
 
 
 
@@ -82,9 +93,47 @@ TSharedRef<SDockTab> FtetsModule::OnSpawnPluginTab(const FSpawnTabArgs& SpawnTab
 		];
 }
 
+void RenderImage(int32 Width, int32 Height, const uint8* Data,const FString& path, const FString& ImageName, bool bSaveJpgOnly = false)
+{
+	if (Data)
+	{
+		IImageWrapperModule& ImageWrapperModule = FModuleManager::LoadModuleChecked<IImageWrapperModule>(FName("ImageWrapper"));
+		TSharedPtr<IImageWrapper> ImageWrapper = ImageWrapperModule.CreateImageWrapper(EImageFormat::JPEG);
+		if (ImageWrapper.IsValid())
+		{
+			ImageWrapper->SetRaw(Data, Width * Height * sizeof(FColor), Width, Height, ERGBFormat::BGRA, 8);
+			FString Filename = FString::Printf(TEXT("%s/%s.jpg"),*path, *FPaths::GetBaseFilename(ImageName, true));
+			FFileHelper::SaveArrayToFile(ImageWrapper->GetCompressed(100), *Filename);
+		}
+	}
+}
+
 void FtetsModule::PluginButtonClicked()
 {
-	FGlobalTabmanager::Get()->TryInvokeTab(tetsTabName);
+	FContentBrowserModule& ContentBrowserModule = FModuleManager::LoadModuleChecked<FContentBrowserModule>("ContentBrowser");
+	TArray<FAssetData> AssetDatas;
+	ContentBrowserModule.Get().GetSelectedAssets(AssetDatas);
+	FString path; //选中文件路径
+	FString fileType = TEXT("XmlFile (*.xml)|*.xml"); //过滤文件类型
+	FString defaultPath = FPaths::ConvertRelativePathToFull(FPaths::ProjectDir()); //文件选择窗口默认开启路径
+	IDesktopPlatform* DesktopPlatform = FDesktopPlatformModule::Get();
+	bool bSuccess = DesktopPlatform->OpenDirectoryDialog(nullptr, TEXT("Choose directory to export thumbnails."), defaultPath,  path);
+	if (!bSuccess)
+	{
+		return;
+
+	}
+
+	for (auto item : AssetDatas) {
+		auto AssetData = item.GetAsset();
+		if (AssetData)
+		{
+			FObjectThumbnail ObjThumnail;
+			ThumbnailTools::RenderThumbnail(AssetData, 2048, 2048, ThumbnailTools::EThumbnailTextureFlushMode::NeverFlush, nullptr, &ObjThumnail);
+			FString imgName = AssetData->GetName();
+			RenderImage(ObjThumnail.GetImageWidth(), ObjThumnail.GetImageHeight(), ObjThumnail.AccessImageData().GetData(), path, imgName);
+		}
+	}
 }
 
 void FtetsModule::RegisterMenus()
