@@ -120,6 +120,10 @@ void FtetsModule::PluginButtonClicked()
 	bool bSuccess = DesktopPlatform->OpenDirectoryDialog(nullptr, TEXT("Choose directory to export thumbnails."), defaultPath,  path);
 	if (!bSuccess)
 	{
+		FText DialogText = FText::Format(
+			LOCTEXT("Exporting Failed", "Exporting failed. Something error has happened. Please retry.{0}"), FText::FromString(TEXT(""))
+		);
+		FMessageDialog::Open(EAppMsgType::Ok, DialogText);
 		return;
 
 	}
@@ -134,6 +138,10 @@ void FtetsModule::PluginButtonClicked()
 			RenderImage(ObjThumnail.GetImageWidth(), ObjThumnail.GetImageHeight(), ObjThumnail.AccessImageData().GetData(), path, imgName);
 		}
 	}
+	FText DialogText = FText::Format(
+		LOCTEXT("Finish Exporting Thumbnails", "Finish exporting. All the thumbnails can be found in the folder selected.{0}"), FText::FromString(TEXT(""))
+	);
+	FMessageDialog::Open(EAppMsgType::Ok, DialogText);
 }
 
 void FtetsModule::RegisterMenus()
