@@ -45,7 +45,7 @@ TSharedRef< FSlateStyleSet > FtetsStyle::Create()
 	TSharedRef< FSlateStyleSet > Style = MakeShareable(new FSlateStyleSet("tetsStyle"));
 	Style->SetContentRoot(IPluginManager::Get().FindPlugin("tets")->GetBaseDir() / TEXT("Resources"));
 
-	Style->Set("tets.OpenPluginWindow", new IMAGE_BRUSH(TEXT("ButtonIcon_40x"), Icon40x40));
+	Style->Set("tets.OpenPluginWindow", new IMAGE_BRUSH(TEXT("Icon128"), Icon40x40));
 
 	return Style;
 }

@@ -45,7 +45,7 @@ void FtetsModule::StartupModule()
 	UToolMenus::RegisterStartupCallback(FSimpleMulticastDelegate::FDelegate::CreateRaw(this, &FtetsModule::RegisterMenus));
 	
 	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(tetsTabName, FOnSpawnTab::CreateRaw(this, &FtetsModule::OnSpawnPluginTab))
-		.SetDisplayName(LOCTEXT("FtetsTabTitle", "tets"))
+		.SetDisplayName(LOCTEXT("FtetsTabTitle", "Generate Thumbnails"))
 		.SetMenuType(ETabSpawnerMenuType::Hidden);
 
 	{
