@@ -16,19 +16,24 @@ SOURCES += \
     dboperator.cpp \
     main.cpp \
     mainwindow.cpp \
-    plant.cpp
+    plant.cpp \
+    plant_browser.cpp \
+    test.cpp
 
 HEADERS += \
     chooseexistdb.h \
     choosenewtagtype.h \
     dboperator.h \
     mainwindow.h \
-    plant.h
+    plant.h \
+    plant_browser.h \
+    test.h
 
 FORMS += \
     chooseexistdb.ui \
     choosenewtagtype.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    plant_browser.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
