@@ -7,6 +7,7 @@ class plant
 {
 public:
     plant();
+    plant(QString filename);
     int plantID;
     QString name = "null";
     int hierarchy = 0;
@@ -21,6 +22,7 @@ public:
     QVector<tag> tags;
     QByteArray image;
     QString imageFmt;
+    bool exportPlant(QString file);
 };
 
 #endif // PLANT_H

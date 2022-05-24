@@ -398,7 +398,7 @@ bool DBOperator::deletePlant(QString plantName){
     }
 }
 
-bool DBOperator::addPlant(QString plantName){
+bool DBOperator::addPlant(QString plantName, plant* formwork){
     {
         QString add_sql = "insert into plant (name, hierarchy) values (:name, 0)";
         QSqlQuery sql_query;
@@ -427,8 +427,22 @@ bool DBOperator::addPlant(QString plantName){
         else
         {
             qDebug() << "Image Inserted!";
-            return true;
         }
     }
+    if(formwork != nullptr){
+        qDebug() << "applying formwork";
+        saveHierarchy(plantName, formwork->hierarchy);
+        for(auto& tag : formwork->tags){
+            qDebug() << "model key is: ";
+            qDebug() << tag.key;
+            if(tag.stringTag){
+                addTag(plantName, tag.key, tag.stringValue);
+            }
+            else{
+                addTag(plantName, tag.key, tag.numberValue);
+            }
+        }
+    }
+    return true;
 }
 
