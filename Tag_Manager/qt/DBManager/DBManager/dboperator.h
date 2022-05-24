@@ -28,7 +28,7 @@ public:
     bool saveHierarchy(QString plantName, int hierarchy);
     bool saveImage(QString plantName, QByteArray img, QString fmt);
     bool deletePlant(QString plantName);
-    bool addPlant(QString plantName);
+    bool addPlant(QString plantName, plant* formwork = nullptr);
     QString getAssetDir();
     bool setAssetDir(QString dir);
 };

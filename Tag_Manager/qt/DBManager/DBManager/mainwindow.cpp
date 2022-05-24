@@ -5,7 +5,7 @@
 #include <QInputDialog>
 #include <QFile>
 #include <QBuffer>
-
+#include "plant_browser.h"
 
 MainWindow* MainWindow::ptrToMainWindow = nullptr;
 MainWindow::MainWindow(QWidget *parent)
@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     setRootDir();
     dbOperator = new DBOperator();
     ui->imgLabel->installEventFilter(this);
+    ui->progressBar->setVisible(false);
 }
 
 MainWindow::~MainWindow()
@@ -174,6 +175,7 @@ void MainWindow::on_nameList_currentTextChanged(const QString &currentText)
     if(currentText == ""){
         currentPlant = zombiePlant;
         ui->saveName->setEnabled(false);
+        ui->exportPlant->setEnabled(false);
         ui->addTag->setEnabled(false);
         ui->deleteTag->setEnabled(false);
         this->imgLabelEnabled = false;
@@ -181,6 +183,7 @@ void MainWindow::on_nameList_currentTextChanged(const QString &currentText)
     else{
         currentPlant = dbOperator->getOnePlantInfo(currentText);
         ui->saveName->setEnabled(true);
+        ui->exportPlant->setEnabled(true);
         ui->addTag->setEnabled(true);
         ui->deleteTag->setEnabled(true);
         this->imgLabelEnabled = true;
@@ -467,20 +470,32 @@ void MainWindow::on_addAsset_clicked()
         QMessageBox::critical(this, "错误","请先打开数据库！");
         return;
     }
-    QString newAssetName = QFileDialog::getOpenFileName(this, "选择打开的文件", this->assetDir);
-    if(newAssetName == "")return;
-    if(!newAssetName.contains(this->assetDir)){
-        QMessageBox::critical(this, "添加失败！","要添加的资源不在当前资源目录中");
-        return;
+    auto newAssetNames = QFileDialog::getOpenFileNames(this, "选择打开的文件", this->assetDir);
+    ui->progressBar->setVisible(true);
+    ui->progressBar->setValue(0);
+    int i = 0;
+    int success = 0;
+    for(auto newAssetName : newAssetNames){
+        if(newAssetName == "")continue;
+        if(!newAssetName.contains(this->assetDir)){
+            QMessageBox::critical(this, "添加失败！","要添加的资源不在当前资源目录中：" + newAssetName);
+            continue;
+        }
+        newAssetName = newAssetName.mid(assetDir.size(), -1);
+        qDebug() << "is formwork null?";
+        qDebug() << (this->formworkPlant == nullptr);
+        if(dbOperator->addPlant(newAssetName, this->formworkPlant)){
+            success ++;
+        }
+        else{
+            QMessageBox::critical(this, "添加失败！","可能是数据库中已经包含该资源：" + newAssetName);
+        }
+        ui->progressBar->setValue(((float)(++ i)) / newAssetNames.size() * 100);
     }
-    newAssetName = newAssetName.mid(assetDir.size(), -1);
-    if(dbOperator->addPlant(newAssetName)){
-        currentPlantList = dbOperator->readAllPlantNames();
-        updatePlantListDisplay();
-    }
-    else{
-        QMessageBox::critical(this, "添加失败！","可能是数据库中已经包含该资源");
-    }
+    currentPlantList = dbOperator->readAllPlantNames();
+    updatePlantListDisplay();
+    QMessageBox::information(this, "添加完成", "添加完成！已添加" + QString::number(success) + "of" + QString::number(newAssetNames.size()));
+    ui->progressBar->setVisible(false);
 }
 
 
@@ -586,3 +601,46 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event){
     }
     return false;
 }
+
+void MainWindow::on_exportPlant_clicked()
+{
+    QString plantFilename=QFileDialog::getSaveFileName(this,"保存植物模板","","Plant model files(*.mod)");
+    if(plantFilename != ""){
+        currentPlant.exportPlant(plantFilename);
+    }
+
+}
+
+
+void MainWindow::on_resetPlantFormwork_2_triggered()
+{
+    if(this->formworkPlant != nullptr){
+        delete (this->formworkPlant);
+    }
+    this->formworkPlant = nullptr;
+    QMessageBox::information(this, "重置成功", "植物模板已被重置");
+}
+
+
+void MainWindow::on_setPlantFormwork_triggered()
+{
+    QString plantFilename = QFileDialog::getOpenFileName(this,"选择植物模板","","Plant model files(*.mod)");
+    if(plantFilename == "")return;
+    if(this->formworkPlant != nullptr){
+        delete (this->formworkPlant);
+    }
+    this->formworkPlant = new plant(plantFilename);
+}
+
+
+void MainWindow::on_checkPlantFormwork_triggered()
+{
+    if(this->formworkPlant == nullptr){
+        QMessageBox::information(this, "没有模板", "当前没有设置植物模板");
+        return;
+    }
+    auto infoDialog = new plant_browser(this);
+    infoDialog->setPlant(formworkPlant);
+    infoDialog->exec () ;// 以模态方式显示对话框
+}
+

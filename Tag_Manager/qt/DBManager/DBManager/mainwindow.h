@@ -60,6 +60,14 @@ private slots:
 
     void on_resetSearch_clicked();
 
+    void on_exportPlant_clicked();
+
+    void on_resetPlantFormwork_2_triggered();
+
+    void on_setPlantFormwork_triggered();
+
+    void on_checkPlantFormwork_triggered();
+
 private:
     plant currentPlant;
     const plant zombiePlant;
@@ -76,5 +84,6 @@ private:
     void writeDBBaseDir(QString dir);
     void setRootDir();
     QString setAssetDir();
+    plant* formworkPlant = nullptr;
 };
 #endif // MAINWINDOW_H
