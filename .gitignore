@@ -7,6 +7,7 @@ DerivedDataCache/
 thirdPerson.sln
 Tag_Manager/db/
 Tag_Manager/qt/DBManager/build-DBManager-Desktop_Qt_6_3_0_MinGW_64_bit-Debug/
+Tag_Manager/qt/DBManager/DBManager/DBManager.pro.user
 Plugins/tets/Binaries/
 Plugins/tets/Intermediate/
 Plugins/CustomFilterPlugin/Binaries/
