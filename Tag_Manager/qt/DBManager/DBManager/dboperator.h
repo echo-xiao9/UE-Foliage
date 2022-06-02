@@ -27,10 +27,12 @@ public:
     bool deleteTag(int tagID, bool isStringTag);
     bool saveHierarchy(QString plantName, int hierarchy);
     bool saveImage(QString plantName, QByteArray img, QString fmt);
+    void tryToSaveImage(QString plantName, QString imgFileName);
     bool deletePlant(QString plantName);
     bool addPlant(QString plantName, plant* formwork = nullptr);
     QString getAssetDir();
     bool setAssetDir(QString dir);
+
 };
 
 #endif // DBOPERATOR_H

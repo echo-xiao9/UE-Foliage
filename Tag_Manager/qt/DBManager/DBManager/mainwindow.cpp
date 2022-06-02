@@ -5,6 +5,10 @@
 #include <QInputDialog>
 #include <QFile>
 #include <QBuffer>
+#include <QTimer>
+#include <QStack>
+#include <QPair>
+#include <QVector>
 #include "plant_browser.h"
 
 MainWindow* MainWindow::ptrToMainWindow = nullptr;
@@ -125,6 +129,7 @@ void MainWindow::openDB(){
     ui->searchPlant->setEnabled(true);
     ui->resetSearch->setEnabled(true);
     ui->setAssetDir->setEnabled(true);
+    ui->importPic->setEnabled(true);
 }
 
 void MainWindow::newDB(){
@@ -152,6 +157,7 @@ void MainWindow::newDB(){
     ui->searchPlant->setEnabled(true);
     ui->resetSearch->setEnabled(true);
     ui->setAssetDir->setEnabled(true);
+    ui->importPic->setEnabled(true);
 }
 
 void MainWindow::MessageBoxForDebug(QString title, QString content){
@@ -244,6 +250,7 @@ void MainWindow::updatePlantDisplay(){
 
 void MainWindow::on_tagList_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
 {
+
     if(current == nullptr){
         ui->KeyText->setText("");
         ui->valueText->setText("");
@@ -264,11 +271,37 @@ void MainWindow::on_tagList_currentItemChanged(QListWidgetItem *current, QListWi
 
     }
     qDebug() << QString("id is %1").arg(current->data(Qt::UserRole + 0).toInt());
+    tagChanged = false;
 }
 
 
 void MainWindow::on_saveTags_clicked()
 {
+    if(!tagChanged){
+        int currentRow = ui->tagList->currentRow();
+        if(currentRow >= 0 && currentRow < ui->tagList->count() - 1){
+            ui->tagList->setCurrentRow(currentRow + 1);
+            ui->KeyText->setFocus();
+            QTimer::singleShot(0, ui->KeyText, &QLineEdit::selectAll);
+        }
+        else{
+            while(true){
+                if(ui->nameList->currentRow() >= 0 && ui->nameList->currentRow() < ui->nameList->count() - 1 ){
+                    ui->nameList->setCurrentRow(ui->nameList->currentRow() + 1);
+                    if(ui->tagList->count() != 0){
+                        ui->tagList->setCurrentRow(0);
+                        ui->KeyText->setFocus();
+                        QTimer::singleShot(0, ui->KeyText, &QLineEdit::selectAll);
+                        break;
+                    }
+                }
+                else{
+                    break;
+                }
+            }
+        }
+        return;
+    }
     if(!dbOperator || !dbOperator->isOpen()){
         QMessageBox::critical(this, "错误","请先打开数据库！");
         return;
@@ -278,11 +311,15 @@ void MainWindow::on_saveTags_clicked()
     }
     if(ui->tagList->currentItem() == nullptr)
         return;
+    int currentRow = ui->tagList->currentRow();
+    qDebug() << "current tag id is";
+    qDebug() << currentRow;
     if(ui->tagList->currentItem()->data(Qt::UserRole + 2).toBool()){
         if(ui->tagList->currentItem()->data(Qt::UserRole).toInt() == -1){
             if(dbOperator->addTag(currentPlant.name, ui->KeyText->text(), ui->valueText->text())){
                 currentPlant = dbOperator->getOnePlantInfo(currentPlant.name);
                 updatePlantDisplay();
+
             }
             else{
                 QMessageBox::critical(this, "保存失败！","请仔细检查输入的标签，若无误请与管理员联系");
@@ -326,6 +363,29 @@ void MainWindow::on_saveTags_clicked()
         }
 
     }
+    qDebug() << "current tag id is (down)";
+    qDebug() << currentRow;
+    if(currentRow >= 0 && currentRow < ui->tagList->count() - 1){
+        ui->tagList->setCurrentRow(currentRow + 1);
+        ui->KeyText->setFocus();
+        QTimer::singleShot(0, ui->KeyText, &QLineEdit::selectAll);
+    }
+    else{
+        while(true){
+            if(ui->nameList->currentRow() >= 0 && ui->nameList->currentRow() < ui->nameList->count() - 1 ){
+                ui->nameList->setCurrentRow(ui->nameList->currentRow() + 1);
+                if(ui->tagList->count() != 0){
+                    ui->tagList->setCurrentRow(0);
+                    ui->KeyText->setFocus();
+                    QTimer::singleShot(0, ui->KeyText, &QLineEdit::selectAll);
+                    break;
+                }
+            }
+            else{
+                break;
+            }
+        }
+    }
 }
 
 
@@ -368,6 +428,7 @@ void MainWindow::on_addTag_clicked()
     item->setText(tag.key + ":" + value);
     ui->tagList->addItem(item);
     ui->tagList->setCurrentItem(item);
+    tagChanged = true;
 
 }
 
@@ -448,6 +509,7 @@ void MainWindow::on_saveName_clicked()
 
 void MainWindow::on_deletAsset_clicked()
 {
+    if(currentPlant.name == "__default__")return;
     if(!dbOperator || !dbOperator->isOpen()){
         QMessageBox::critical(this, "错误","请先打开数据库！");
         return;
@@ -642,5 +704,68 @@ void MainWindow::on_checkPlantFormwork_triggered()
     auto infoDialog = new plant_browser(this);
     infoDialog->setPlant(formworkPlant);
     infoDialog->exec () ;// 以模态方式显示对话框
+}
+
+
+void MainWindow::on_KeyText_returnPressed()
+{
+    if(ui->saveTags->isEnabled())
+        on_saveTags_clicked();
+}
+
+
+void MainWindow::on_valueText_returnPressed()
+{
+    if(ui->saveTags->isEnabled())
+        on_saveTags_clicked();
+}
+
+
+void MainWindow::on_KeyText_textChanged(const QString &arg1)
+{
+    tagChanged = true;
+}
+
+
+void MainWindow::on_valueText_textChanged(const QString &arg1)
+{
+    tagChanged = true;
+}
+
+
+void MainWindow::on_importPic_triggered()
+{
+    auto parDir = QFileDialog::getExistingDirectory(this, "选取文件夹", "");
+    QVector<QPair<QString, QString>> files;
+    QStack<QString> paths;
+    paths.push(parDir);
+    while(!paths.empty()){
+        auto currDir = QDir(paths.pop());
+        QFileInfoList fileInfoList = currDir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot | QDir::Dirs);
+        for (auto& fileInfo: fileInfoList) {
+           if(fileInfo.isDir())
+           {
+               paths.push(fileInfo.filePath());
+           }
+           else if(fileInfo.isFile()){
+
+               files.append(QPair<QString, QString>(fileInfo.canonicalFilePath().replace(parDir, "").replace(fileInfo.fileName(), fileInfo.baseName()),fileInfo.absoluteFilePath()));
+           }
+       }
+
+    }
+    ui->progressBar->setVisible(true);
+    ui->progressBar->setValue(0);
+    int size = files.size();
+    int i = 0;
+    for(auto& file : files){
+        dbOperator->tryToSaveImage(file.first, file.second);
+        ui->progressBar->setValue(++i / ((float)size) * 100.0);
+        qDebug() << "progress is " + QString::number((i / ((float)(size)) * 100.0));
+    }
+    QMessageBox::information(this, "导入完成", "文件夹中符合要求的图片已经被全部导入！");
+    ui->progressBar->setVisible(false);
+    updatePlantListDisplay();
+
 }
 
