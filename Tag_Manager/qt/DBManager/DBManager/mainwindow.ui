@@ -447,9 +447,16 @@
     <addaction name="checkPlantFormwork"/>
     <addaction name="resetPlantFormwork_2"/>
    </widget>
+   <widget class="QMenu" name="menu_4">
+    <property name="title">
+     <string>操作</string>
+    </property>
+    <addaction name="importPic"/>
+   </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
    <addaction name="menu_3"/>
+   <addaction name="menu_4"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="newFile">
@@ -488,6 +495,15 @@
   <action name="resetPlantFormwork_2">
    <property name="text">
     <string>重置模板</string>
+   </property>
+  </action>
+  <action name="importPic">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>批量导入图片
+</string>
    </property>
   </action>
  </widget>

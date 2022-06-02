@@ -5,6 +5,7 @@
 #include <string>
 #include <QFile>
 #include <QTextStream>
+#include <QFileInfo>
 DBOperator::DBOperator()
 {
     db = QSqlDatabase::addDatabase("QSQLITE");
@@ -444,5 +445,55 @@ bool DBOperator::addPlant(QString plantName, plant* formwork){
         }
     }
     return true;
+}
+
+void DBOperator::tryToSaveImage(QString plantName, QString imgFilename){
+    QString find_sql = "select id from plant where name like :name";
+    QSqlQuery sql_query;
+    sql_query.prepare(find_sql);
+    sql_query.bindValue(":name", QString("%1%").arg(plantName + "."));
+    bool found = false;
+    int id;
+    if(!sql_query.exec())
+    {
+        qDebug()<<sql_query.lastError();
+        return;
+    }
+    else
+    {
+        while(sql_query.next())
+        {
+            id = sql_query.value(0).toInt();
+            qDebug()<<QString("find plant id is : %1").arg(id);
+            found = true;
+        }
+    }
+    if(found){
+        QFileInfo fileInfo(imgFilename);
+        if(!fileInfo.isFile()){
+            return;
+        }
+        QString fmt = fileInfo.suffix();
+        QFile imgFile(imgFilename);
+        if (!imgFile.open(QIODevice::ReadOnly | QIODevice::Truncate))
+            return;
+        auto imgByteArray = imgFile.readAll();
+         QString update_sql = "insert or replace into image (imagebin, imageformat, plantid) values (:img, :fmt, :id)";
+         QSqlQuery sql_query;
+         sql_query.prepare(update_sql);
+         sql_query.bindValue(":img",imgByteArray);
+         sql_query.bindValue(":fmt", fmt);
+         sql_query.bindValue(":id",id);
+         if(!sql_query.exec())
+         {
+             qDebug() << sql_query.lastError();
+             return;
+         }
+         else
+         {
+             qDebug() << "Image Inserted!";
+             qDebug() << imgFilename;
+         }
+    }
 }
 

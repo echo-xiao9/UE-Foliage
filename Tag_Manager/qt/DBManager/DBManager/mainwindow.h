@@ -68,7 +68,18 @@ private slots:
 
     void on_checkPlantFormwork_triggered();
 
+    void on_KeyText_returnPressed();
+
+    void on_valueText_returnPressed();
+
+    void on_KeyText_textChanged(const QString &arg1);
+
+    void on_valueText_textChanged(const QString &arg1);
+
+    void on_importPic_triggered();
+
 private:
+    bool tagChanged;
     plant currentPlant;
     const plant zombiePlant;
     QVector<QString> currentPlantList;
