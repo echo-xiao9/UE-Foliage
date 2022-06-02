@@ -44,6 +44,7 @@ public class tets : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
+				"Landscape"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

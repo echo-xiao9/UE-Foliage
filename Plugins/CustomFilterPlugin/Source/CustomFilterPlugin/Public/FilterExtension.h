@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/ObjectMacros.h"
 #include "ContentBrowserFrontEndFilterExtension.h"
+#include <fstream>
 #include "FilterExtension.generated.h"
 
 UCLASS()

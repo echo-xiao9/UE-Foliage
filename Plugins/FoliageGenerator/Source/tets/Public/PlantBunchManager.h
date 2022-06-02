@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "PlantBunch.h"
+#include "Landscape.h"
+#include "Math/UnrealMathUtility.h"
 #include "PlantBunchManager.generated.h"
 
 UCLASS()
@@ -20,6 +22,9 @@ public:
     
     UPROPERTY(EditAnywhere, Category = "MainTree")
     AActor* mainTree;
+
+private:
+	float GetLandscapeHeight(FVector spawnLocation, float radius, float maxDeltaHeight, bool& smoothLandscape);
 
 protected:
 	// Called when the game starts or when spawned

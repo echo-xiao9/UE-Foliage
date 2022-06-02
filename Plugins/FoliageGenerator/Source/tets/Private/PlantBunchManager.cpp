@@ -59,6 +59,15 @@ void APlantBunchManager::GenerateSingle(FVector centerPos,float radius, float an
     float deltaY = radius * FMath::Sin(angle);
     UE_LOG(LogClass, Log, TEXT("deltaX:%f"), deltaX);
     FVector newPos(centerPos.X + deltaX, centerPos.Y + deltaY, centerPos.Z);
+
+    // adjust the z position according to the landscape
+    bool validPos = true;
+    float deltaZ = GetLandscapeHeight(newPos, 200, 2000, validPos);
+    if (!validPos)
+        return;
+    newPos = newPos + FVector(0, 0, deltaZ-newPos.Z);
+    UE_LOG(LogClass, Log, TEXT("generate sub0 deltaZ:%f"), newPos.Z);
+
     FTransform spawnLocation0(newPos);
     switch (type) {
         case 0:{
@@ -98,6 +107,77 @@ void APlantBunchManager::GenerateSingle(FVector centerPos,float radius, float an
 //    UE_LOG(LogClass, Log, TEXT("chosenTree:%d"), chosenTree);
     
     
+}
+
+float APlantBunchManager::GetLandscapeHeight(FVector spawnLocation, float radius, float maxDeltaHeight, bool& validPos)
+{
+    TArray<FVector> testPositions;
+    testPositions.Add(spawnLocation);
+    for (int i = 0; i < 8; i++)
+    {
+        float degree = 45 * i;
+        float radian = FMath::DegreesToRadians(degree);
+        float SinValue = FMath::Sin(radian);
+        float CosValue = FMath::Cos(radian);
+        FVector tmpVector1(spawnLocation.X + radius * CosValue, spawnLocation.Y + radius * SinValue, spawnLocation.Z);
+        FVector tmpVector2(spawnLocation.X + radius * CosValue / 2, spawnLocation.Y + radius * SinValue / 2, spawnLocation.Z);
+        testPositions.Add(tmpVector1);
+        testPositions.Add(tmpVector2);
+    }
+
+    FVector up(0, 0, 10000);
+    float maxZ = 0;
+    float minZ = 0;
+    bool hasValidZ = false;
+
+    for (const FVector& position : testPositions)
+    {
+        FVector startPos = position + up;
+        FVector endPos = position - up;
+        TArray<FHitResult> hits;
+        FCollisionShape sphereShape;
+        sphereShape.SetSphere(1);
+
+        GetWorld()->SweepMultiByObjectType(hits, startPos, endPos, FQuat::Identity, FCollisionObjectQueryParams(ECC_WorldStatic), sphereShape);
+
+        for (const FHitResult& hit : hits)
+        {
+            const AActor* hitActor = hit.GetActor();
+            if (hitActor->IsA(ALandscape::StaticClass()))
+            {
+                float z = hit.ImpactPoint.Z;
+                if (!hasValidZ)
+                {
+                    maxZ = z;
+                    minZ = z;
+                    hasValidZ = true;
+                }
+                else
+                {
+                    maxZ = maxZ > z ? maxZ : z;
+                    minZ = minZ < z ? minZ : z;
+                }
+                continue;
+            }
+        }
+    }
+    if (maxZ - minZ > maxDeltaHeight)
+    {
+        UE_LOG(LogClass, Log, TEXT("not smooth ladscape"));
+        validPos = false;
+        return 0;
+    }
+    else if (hasValidZ)
+    {
+        validPos = true;
+        return minZ;
+    }
+    else
+    {
+        validPos = false;
+        UE_LOG(LogClass, Log, TEXT("Can't find Landscape at the position where the foliage is spawned, so the height is set to 0"));
+        return 0;
+    }
 }
 
 void APlantBunchManager::Generate()
