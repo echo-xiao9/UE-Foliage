@@ -136,7 +136,7 @@ void FtetsModule::PluginButtonClicked()
 			ThumbnailTools::RenderThumbnail(AssetData, 2048, 2048, ThumbnailTools::EThumbnailTextureFlushMode::NeverFlush, nullptr, &ObjThumnail);
 			FString imgName = AssetData->GetName();
 			auto pathname = AssetData->GetPathName();
-			auto finalPathname = pathname.Replace(TEXT("/Game"), TEXT("/Content"));
+			auto finalPathname = pathname.Replace(TEXT("/Game"), TEXT(""));
 			finalPathname.RemoveFromEnd(imgName + "." + imgName);
 
 			RenderImage(ObjThumnail.GetImageWidth(), ObjThumnail.GetImageHeight(), ObjThumnail.AccessImageData().GetData(), path + finalPathname, imgName);
