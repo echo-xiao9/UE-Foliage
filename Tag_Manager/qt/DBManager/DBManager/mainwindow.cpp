@@ -9,6 +9,7 @@
 #include <QStack>
 #include <QPair>
 #include <QVector>
+#include <QCursor>
 #include "plant_browser.h"
 
 MainWindow* MainWindow::ptrToMainWindow = nullptr;
@@ -127,6 +128,7 @@ void MainWindow::openDB(){
     ui->addAsset->setEnabled(true);
     ui->deletAsset->setEnabled(true);
     ui->searchPlant->setEnabled(true);
+    ui->searchName->setEnabled(true);
     ui->resetSearch->setEnabled(true);
     ui->setAssetDir->setEnabled(true);
     ui->importPic->setEnabled(true);
@@ -155,6 +157,7 @@ void MainWindow::newDB(){
     ui->addAsset->setEnabled(true);
     ui->deletAsset->setEnabled(true);
     ui->searchPlant->setEnabled(true);
+    ui->searchName->setEnabled(true);
     ui->resetSearch->setEnabled(true);
     ui->setAssetDir->setEnabled(true);
     ui->importPic->setEnabled(true);
@@ -181,18 +184,24 @@ void MainWindow::on_nameList_currentTextChanged(const QString &currentText)
     if(currentText == ""){
         currentPlant = zombiePlant;
         ui->saveName->setEnabled(false);
+        ui->NameText->setEnabled(false);
+        ui->hierarchyText->setEnabled(false);
         ui->exportPlant->setEnabled(false);
         ui->addTag->setEnabled(false);
         ui->deleteTag->setEnabled(false);
         this->imgLabelEnabled = false;
+        ui->chooseColor->setEnabled(false);
     }
     else{
         currentPlant = dbOperator->getOnePlantInfo(currentText);
         ui->saveName->setEnabled(true);
+        ui->NameText->setEnabled(true);
+        ui->hierarchyText->setEnabled(true);
         ui->exportPlant->setEnabled(true);
         ui->addTag->setEnabled(true);
         ui->deleteTag->setEnabled(true);
         this->imgLabelEnabled = true;
+        ui->chooseColor->setEnabled(true);
     }
     updatePlantDisplay();
 }
@@ -255,10 +264,14 @@ void MainWindow::on_tagList_currentItemChanged(QListWidgetItem *current, QListWi
         ui->KeyText->setText("");
         ui->valueText->setText("");
         ui->saveTags->setEnabled(false);
+        ui->KeyText->setEnabled(false);
+        ui->valueText->setEnabled(false);
         ui->resetTags->setEnabled(false);
         return;
     }
     ui->saveTags->setEnabled(true);
+    ui->KeyText->setEnabled(true);
+    ui->valueText->setEnabled(true);
     ui->resetTags->setEnabled(true);
     qDebug() << QString("now data is %1").arg(current->data(Qt::UserRole + 1).toString());
     ui->KeyText->setText(current->data(Qt::UserRole + 1).toString());
@@ -634,7 +647,7 @@ void MainWindow::on_resetSearch_clicked()
 bool MainWindow::eventFilter(QObject *obj, QEvent *event){
     if(obj == ui->imgLabel)
     {
-         if (event->type() == QEvent::MouseButtonPress)
+         if (event->type() == QEvent::MouseButtonPress && ui->chooseColor->isChecked() == false)
          {
             if(this->imgLabelEnabled){
                 QString curPath=assetDir;//获取系统当前目录
@@ -659,6 +672,21 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event){
 
             }
             return true;
+         }
+         else if(event->type() == QEvent::MouseButtonPress && ui->chooseColor->isChecked() == true && !(ui->imgLabel->pixmap().isNull())){
+              QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
+              QPointF p = mouseEvent->pos();
+              auto color = ui->imgLabel->pixmap().toImage().pixel(p.x(), p.y());
+              int r;
+              int g;
+              int b;
+              QColor(color).getRgb(&r, &g, &b);
+              ui->RGB_text->setText(QString("R: %1, G: %2, B: %3").arg(r).arg(g).arg(b));
+              int h;
+              int s;
+              int v;
+              QColor(color).getHsv(&h, &s, &v);
+              ui->HSV_text->setText(QString("H: %1, S: %2, V: %3").arg(QString::number(float(h),'f',1)).arg(QString::number(s / 255.0 * 100.0,'f',1)).arg(QString::number(v / 255.0 * 100.0,'f',1)));
          }
     }
     return false;
@@ -767,5 +795,20 @@ void MainWindow::on_importPic_triggered()
     ui->progressBar->setVisible(false);
     updatePlantListDisplay();
 
+}
+
+
+void MainWindow::on_chooseColor_stateChanged(int arg1)
+{
+    if(arg1 != 0){
+        qDebug() << "choose!";
+
+        QPixmap cursor_pix = QPixmap(":/icons/getColor.png");
+        ui->imgLabel->setCursor(QCursor(cursor_pix, 0, 16));
+    }
+    else if(arg1 == 0){
+        qDebug() << "unchoose!";
+        ui->imgLabel->setCursor(Qt::ArrowCursor);
+    }
 }
 

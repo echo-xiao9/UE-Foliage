@@ -6,6 +6,7 @@
         <file alias="string">string.png</file>
         <file>reset.png</file>
         <file>search.png</file>
+        <file>getColor.png</file>
     </qresource>
     <qresource prefix="/sqlScripts">
         <file>formwork.sql</file>

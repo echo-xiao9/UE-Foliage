@@ -78,6 +78,8 @@ private slots:
 
     void on_importPic_triggered();
 
+    void on_chooseColor_stateChanged(int arg1);
+
 private:
     bool tagChanged;
     plant currentPlant;
