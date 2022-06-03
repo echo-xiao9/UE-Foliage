@@ -7,17 +7,29 @@
 #include "FrontendFilterBase.h"
 #include "DBApi.h"
 #include "Misc/App.h"
+#include "Misc/Paths.h"
+#include "Math/Color.h"
 /**
  *
  */
 class CustomFilter : public FFrontendFilter
 {
 public:
-	CustomFilter(TSharedPtr<FFrontendFilterCategory> InCategory, FString name, FString key, FString value) : FFrontendFilter(InCategory)
+	CustomFilter(TSharedPtr<FFrontendFilterCategory> InCategory, FString name, FString type, FString key, FString value) : FFrontendFilter(InCategory)
 	{
 		filterName = name;
+		filterType = type;
 		filterKey = key;
 		filterValue = value;
+	}
+
+	CustomFilter(TSharedPtr<FFrontendFilterCategory> InCategory, FString name, FString type, FString key, FString minValue, FString maxValue) : FFrontendFilter(InCategory)
+	{
+		filterName = name;
+		filterType = type;
+		filterKey = key;
+		filterMinValue = minValue;
+		filterMaxValue = maxValue;
 	}
 
 	// FFrontendFilter implementation
@@ -33,7 +45,9 @@ private:
 	FString filterName;
 	FString filterKey;
 	FString filterValue;
-
+	FString filterType;
+	FString filterMinValue;
+	FString filterMaxValue;
 };
 
 DECLARE_LOG_CATEGORY_EXTERN(MyLog, Log, All);
