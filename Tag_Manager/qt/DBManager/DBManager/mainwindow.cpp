@@ -137,6 +137,7 @@ void MainWindow::openDB(){
 void MainWindow::newDB(){
 
     QString projName = QInputDialog::getText(this, tr("输入项目名"), tr("请输入项目名："), QLineEdit::Normal,tr(""));
+    if(projName.isEmpty())return;
      QFileInfo fileInfo(QFile(DBDir+ "/" + projName + ".db"));
     if(fileInfo.isFile()){
         QMessageBox::critical(this, "数据库文件已经存在！", "请检查您输入的项目名");
