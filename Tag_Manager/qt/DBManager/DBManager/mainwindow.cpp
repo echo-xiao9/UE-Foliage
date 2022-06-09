@@ -567,6 +567,7 @@ void MainWindow::on_addAsset_clicked()
             QMessageBox::critical(this, "添加失败！","可能是数据库中已经包含该资源：" + newAssetName);
         }
         ui->progressBar->setValue(((float)(++ i)) / newAssetNames.size() * 100);
+        QApplication::processEvents();
     }
     currentPlantList = dbOperator->readAllPlantNames();
     updatePlantListDisplay();
@@ -791,6 +792,7 @@ void MainWindow::on_importPic_triggered()
         dbOperator->tryToSaveImage(file.first, file.second);
         ui->progressBar->setValue(++i / ((float)size) * 100.0);
         qDebug() << "progress is " + QString::number((i / ((float)(size)) * 100.0));
+        QApplication::processEvents();
     }
     QMessageBox::information(this, "导入完成", "文件夹中符合要求的图片已经被全部导入！");
     ui->progressBar->setVisible(false);
