@@ -7,6 +7,7 @@
         <file>reset.png</file>
         <file>search.png</file>
         <file>getColor.png</file>
+        <file>tags.png</file>
     </qresource>
     <qresource prefix="/sqlScripts">
         <file>formwork.sql</file>
