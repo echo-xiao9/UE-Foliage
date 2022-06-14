@@ -2,16 +2,23 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>851</width>
-    <height>701</height>
+    <height>777</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>TagManager</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="assets.qrc">
+    <normaloff>:/icons/tags.png</normaloff>:/icons/tags.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QWidget" name="verticalLayoutWidget">
@@ -20,7 +27,7 @@
       <x>30</x>
       <y>30</y>
       <width>801</width>
-      <height>610</height>
+      <height>677</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -73,7 +80,11 @@
             <number>7</number>
            </property>
            <item>
-            <widget class="QLineEdit" name="searchName"/>
+            <widget class="QLineEdit" name="searchName">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
            </item>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -158,12 +169,6 @@
              </item>
              <item>
               <widget class="QLabel" name="imgLabel">
-               <property name="minimumSize">
-                <size>
-                 <width>320</width>
-                 <height>240</height>
-                </size>
-               </property>
                <property name="text">
                 <string/>
                </property>
@@ -201,6 +206,109 @@
             </spacer>
            </item>
            <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_10" stretch="1,2,2,7,2,9,1">
+             <item>
+              <spacer name="horizontalSpacer_7">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="chooseColor">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="text">
+                <string>取色</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_3">
+               <property name="text">
+                <string>RGB</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="RGB_text">
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_4">
+               <property name="text">
+                <string>HSV</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="HSV_text">
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_6">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_9"/>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_6">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="Line" name="line">
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <property name="lineWidth">
+              <number>3</number>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
             <layout class="QGridLayout" name="gridLayout">
              <item row="0" column="0">
               <layout class="QGridLayout" name="gridLayout_2">
@@ -216,13 +324,20 @@
                </item>
                <item row="1" column="0">
                 <widget class="QLineEdit" name="NameText">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="readOnly">
                   <bool>true</bool>
                  </property>
                 </widget>
                </item>
                <item row="1" column="1">
-                <widget class="QLineEdit" name="hierarchyText"/>
+                <widget class="QLineEdit" name="hierarchyText">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                </widget>
                </item>
                <item row="0" column="0">
                 <widget class="QLabel" name="label">
@@ -285,9 +400,6 @@
                 </widget>
                </item>
                <item>
-                <widget class="QLineEdit" name="KeyText"/>
-               </item>
-               <item>
                 <widget class="QLabel" name="ValueLabel">
                  <property name="text">
                   <string>Value</string>
@@ -298,7 +410,18 @@
                 </widget>
                </item>
                <item>
-                <widget class="QLineEdit" name="valueText"/>
+                <widget class="QLineEdit" name="KeyText">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="valueText">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                </widget>
                </item>
                <item>
                 <spacer name="verticalSpacer">
@@ -504,6 +627,21 @@
    <property name="text">
     <string>批量导入图片
 </string>
+   </property>
+  </action>
+  <action name="getH">
+   <property name="text">
+    <string>色相</string>
+   </property>
+  </action>
+  <action name="getS">
+   <property name="text">
+    <string>亮度</string>
+   </property>
+  </action>
+  <action name="getV">
+   <property name="text">
+    <string>饱和度</string>
    </property>
   </action>
  </widget>
