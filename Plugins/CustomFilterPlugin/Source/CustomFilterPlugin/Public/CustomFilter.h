@@ -50,4 +50,3 @@ private:
 	FString filterMaxValue;
 };
 
-DECLARE_LOG_CATEGORY_EXTERN(MyLog, Log, All);

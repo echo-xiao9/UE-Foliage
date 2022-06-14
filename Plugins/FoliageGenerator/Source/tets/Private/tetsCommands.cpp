@@ -6,7 +6,7 @@
 
 void FtetsCommands::RegisterCommands()
 {
-	UI_COMMAND(OpenPluginWindow, "Export Thumbnails", "Click to export thumbnails of assets selected.", EUserInterfaceActionType::Button, FInputGesture());
+	 UI_COMMAND(OpenPluginWindow, "Export Thumbnails", "Click to export thumbnails of assets selected.", EUserInterfaceActionType::Button, FInputGesture());
 }
 
 #undef LOCTEXT_NAMESPACE

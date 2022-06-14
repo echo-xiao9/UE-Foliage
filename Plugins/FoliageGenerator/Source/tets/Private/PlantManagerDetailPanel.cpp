@@ -41,4 +41,25 @@ void FPlantManagerDetailPanel::CustomizeDetails(IDetailLayoutBuilder& DetailLayo
 			] 
 		];
 
+     //为此目录添加一行记录。第一个参数用于过滤搜索的文本，第二个参数是是否为高级项。
+    CustCategory.AddCustomRow(LOCTEXT("CustRow", "CustRow"), false).NameContent()    //NameContent是属性名
+        [
+            SNew(STextBlock).Text(LOCTEXT("Recommend Button", "Recommend Button"))
+        ].ValueContent()
+        [    //ValueContent是值的内容。如果不想区分Key和Value分割的话，可以直接使用WholeRowContent,下面有。。
+            SNew(SVerticalBox) + SVerticalBox::Slot().HAlign(HAlign_Fill).AutoHeight()
+            [
+                SNew(SButton)
+                .Text(LOCTEXT("Recommend Button", "Recommend Button"))
+                .OnClicked_Lambda([customizedObjects]() {
+                    for (auto o : customizedObjects) {
+                        if (o.IsValid() && o->IsA(APlantBunchManager::StaticClass())) {
+                        Cast<APlantBunchManager>(o)->Recommend();
+                        }
+                    }
+                    return FReply::Handled();
+                })
+            ]
+        ];
+
 }

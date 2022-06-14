@@ -34,5 +34,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	void Generate();
-    void GenerateSingle(FVector centerPos, float radius, float angle,int type);
+  void Recommend(){plantBunch-> recommendPlant();}
+  void GenerateSingle(FVector centerPos, float radius, float angle,int type);
 };

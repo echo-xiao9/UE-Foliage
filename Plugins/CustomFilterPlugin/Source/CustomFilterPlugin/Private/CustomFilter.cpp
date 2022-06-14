@@ -5,8 +5,6 @@
 
 #define LOCTEXT_NAMESPACE "CustomFilter"
 
-DEFINE_LOG_CATEGORY(MyLog);
-
 FLinearColor CustomFilter::GetColor() const
 {
 	/*if (filterKey.Equals("Color") && filterValue.Equals("Yellow"))

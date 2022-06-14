@@ -4,7 +4,10 @@
 #include "PlantRecommend.h"
 
 
-TArray<FString> UPlantRecommend::GetRecommendPlants(FString mainTreeName, FoliageGeneratorUtils::PlantLayer targetLayer)
+TArray<FString> UPlantRecommend::GetRecommendPlants(
+	FString mainTreeName, 
+	FoliageGeneratorUtils::PlantLayer targetLayer,
+	FString specificEcosystems)
 {
 	TArray<DBApi::stringKV> stringTags;
 	TArray<DBApi::numberKV> numberTags;
@@ -15,15 +18,18 @@ TArray<FString> UPlantRecommend::GetRecommendPlants(FString mainTreeName, Foliag
 
 	// phase ecosystem
 	TArray<FString> ecosytems;
-	DBApi::stringKV* ecosysKV = stringTags.FindByPredicate([](DBApi::stringKV kv) { return kv.key == "Ecosystem"; });
-	if (!ecosysKV) {
-		// ecosystem tag missing
+	if (specificEcosystems == "") {
+		DBApi::stringKV* ecosysKV = stringTags.FindByPredicate([](DBApi::stringKV kv) { return kv.key == "Ecosystem"; });
+		if (!ecosysKV) {
+			// ecosystem tag missing
+		}
+		specificEcosystems = ecosysKV->value;
 	}
-	FString ecosysPop, ecosysVal = ecosysKV->value;
-	while (ecosysVal.Split("/", &ecosysPop, &ecosysVal)) {
+	FString ecosysPop;
+	while (specificEcosystems.Split("/", &ecosysPop, &specificEcosystems)) {
 		ecosytems.Add(ecosysPop);
 	}
-	ecosytems.Add(ecosysVal);
+	ecosytems.Add(specificEcosystems);
 
 	// color match
 	DBApi::findAllPlantsWithSomeTagsRequest colorRequest;
@@ -35,20 +41,38 @@ TArray<FString> UPlantRecommend::GetRecommendPlants(FString mainTreeName, Foliag
 	if (!colorH || !colorS || !colorV) {
 		// color tag missing
 	}
+
 	DBApi::numberKVRequest colorRange;
+
 	float HOff = 2.0;
 	colorRange.key = colorH->key;
 	colorRange.lowerBound = colorH->value - 360.0 * HOff / (colorS->value + HOff);
 	colorRange.upperBound = colorH->value + 360.0 * HOff / (colorS->value + HOff);
+	if (targetLayer == FoliageGeneratorUtils::PlantLayer::Flower || targetLayer == FoliageGeneratorUtils::PlantLayer::Stone) {
+		colorRange.lowerBound = 0;
+		colorRange.upperBound = 360;
+	}
 	colorRanges.Add(colorRange);
+
 	float SOff = 20.0;
 	colorRange.key = colorS->key;
 	colorRange.lowerBound = colorS->value - SOff;
 	colorRange.upperBound = colorS->value + SOff;
+	if (targetLayer == FoliageGeneratorUtils::PlantLayer::Stone) {
+		colorRange.lowerBound = 0;
+		colorRange.upperBound = 100;
+	}
+	colorRanges.Add(colorRange);
+
 	float VOff = 50.0;
 	colorRange.key = colorV->key;
 	colorRange.lowerBound = colorV->value - VOff;
 	colorRange.upperBound = colorV->value + VOff;
+	if (targetLayer == FoliageGeneratorUtils::PlantLayer::Stone) {
+		colorRange.lowerBound = 0;
+		colorRange.upperBound = 100;
+	}
+	colorRanges.Add(colorRange);
 	colorRequest.numberTags = colorRanges;
 	DBApi::findAllPlantsWithSomeTagsResult colorRes = DBApi::findAllPlantsWithSomeTags(colorRequest);
 	if (colorRes.errCode) {
@@ -130,4 +154,24 @@ int UPlantRecommend::GetPlantTags(
 	stringTags = res.stringTags;
 	numberTags = res.numberTags;
 	return res.errCode;
+}
+
+TArray<UBlueprint*> UPlantRecommend::GetRecommendPlantsBP(
+	FString mainTreeName,
+	FoliageGeneratorUtils::PlantLayer targetLayer,
+	FString specificEcosystems)
+{
+	TArray<FString> names = GetRecommendPlants(mainTreeName, targetLayer, specificEcosystems);
+	TArray<UBlueprint*> BPs;
+	for (int i = 0; i < names.Num(); ++i) {
+		FString tmp;
+		names[i].Split(".uasset", &names[i], &tmp, ESearchCase::CaseSensitive, ESearchDir::FromEnd);
+		names[i].Split("/", &names[i], &tmp, ESearchCase::CaseSensitive, ESearchDir::FromEnd);
+		FString path(TEXT("Blueprint'/Game" + names[i] + "/" + tmp + "." + tmp + "'"));
+		FSoftObjectPath assetRef(path);
+		TAssetPtr<UBlueprint> assetPtr(assetRef);
+		UBlueprint* bp = assetPtr.LoadSynchronous();
+		BPs.Add(bp);
+	}
+	return BPs;
 }

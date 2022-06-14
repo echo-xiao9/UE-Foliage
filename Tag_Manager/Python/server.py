@@ -75,13 +75,22 @@ def findAllPlantsWithSomeTags(req: dict):
     db = DATABASE_DIR + req[u'projName'] + '.db'
     numberTags = req[u'numberTags']
     stringTags = req[u'stringTags']
-    sql = "select distinct plant.name, plant.hierarchy from plant, numbertag, stringtag " 
-    note = "where"
-    for tag in  numberTags:
-        sql = sql + note +  ' (plant.id = numbertag.plantid and numbertag.key = \'%s\' and numbertag.value >= %d and numbertag.value < %d) ' %(tag[u'key'], tag[u'lowerBound'], tag[u'upperBound'])
-        note = 'or'
+    sql = ""
+    note = ""
+    for tag in numberTags:
+        sql =sql + note + 'select distinct plant.name, plant.hierarchy from plant, numbertag where (plant.id = numbertag.plantid and numbertag.key = \'%s\' and numbertag.value >= %f and numbertag.value < %f) ' %(tag[u'key'], tag[u'lowerBound'], tag[u'upperBound'])
+        note = " INTERSECT "
     for tag in stringTags:
-        sql = sql + note +  ' (plant.id = stringtag.plantid and stringtag.key = \'%s\' and stringtag.value = \'%s\') ' %(tag[u'key'], tag[u'value'])
+        sql = sql + note +  'select distinct plant.name, plant.hierarchy from plant, stringtag where (plant.id = stringtag.plantid and stringtag.key = \'%s\' and stringtag.value = \'%s\') ' %(tag[u'key'], tag[u'value'])
+        note = " INTERSECT "
+    #     note = 'and'
+    # sql = "select distinct plant.name, plant.hierarchy from plant, numbertag, stringtag " 
+    # note = "where"
+    # for tag in  numberTags:
+    #     sql = sql + note +  ' (plant.id = numbertag.plantid and numbertag.key = \'%s\' and numbertag.value >= %f and numbertag.value < %f) ' %(tag[u'key'], tag[u'lowerBound'], tag[u'upperBound'])
+    #     note = 'and'
+    # for tag in stringTags:
+    #     sql = sql + note +  ' (plant.id = stringtag.plantid and stringtag.key = \'%s\' and stringtag.value = \'%s\') ' %(tag[u'key'], tag[u'value'])
     conn = sqlite3.connect(db)
     c = conn.cursor()
     print(sql)
@@ -166,7 +175,7 @@ def echo_server():
         # 输出客户端地址
         print(f'Connect by {addr}')
         while True:
-            data = conn.recv(1024)
+            data = conn.recv(1024 * 1024)
             print(data)
             if not data:
                 break

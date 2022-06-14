@@ -20,3 +20,5 @@ public:
 	virtual void AddFrontEndFilterExtensions(TSharedPtr<class FFrontendFilterCategory> DefaultCategory, TArray< TSharedRef<class FFrontendFilter> >& InOutFilterList) const override;
 	// End of UContentBrowserFrontEndFilterExtension interface
 };
+
+DECLARE_LOG_CATEGORY_EXTERN(MyLog, Log, All);

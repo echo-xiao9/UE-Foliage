@@ -264,3 +264,4 @@ void APlantBunchManager::Generate()
     
     UE_LOG(LogClass, Log, TEXT("Generate.%s"));
 }
+

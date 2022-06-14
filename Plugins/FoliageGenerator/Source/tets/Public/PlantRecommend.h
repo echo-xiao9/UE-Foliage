@@ -9,17 +9,24 @@
 #include "PlantRecommend.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class TETS_API UPlantRecommend : public UObject
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	static TArray<FString> GetRecommendPlants(FString mainTreeName, FoliageGeneratorUtils::PlantLayer targetLayer);
+    static TArray<FString> GetRecommendPlants(
+        FString mainTreeName,
+        FoliageGeneratorUtils::PlantLayer targetLayer,
+        FString specificEcosystems = "");
+    static TArray<UBlueprint *> GetRecommendPlantsBP(
+        FString mainTreeName,
+        FoliageGeneratorUtils::PlantLayer targetLayer,
+        FString specificEcosystems = "");
 
 protected:
-	static int GetPlantTags(FString mainTreeName, TArray<DBApi::stringKV>& stringTags, TArray<DBApi::numberKV>& numberTags);
-	
+    static int GetPlantTags(FString mainTreeName, TArray<DBApi::stringKV>& stringTags, TArray<DBApi::numberKV>& numberTags);
+    
 };
