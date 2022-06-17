@@ -2,7 +2,7 @@
 #define CHOOSEEXISTDB_H
 
 #include <QDialog>
-
+/*这个文件用来定义一个窗口，在选取数据库的时候能够显示列表*/
 namespace Ui {
 class ChooseExistDB;
 }

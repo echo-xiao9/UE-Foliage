@@ -29,10 +29,10 @@ public:
     bool eventFilter(QObject *obj, QEvent *event);
 
 private slots:
+    //以下槽函数由QT自动生成，对应窗口中每个部件的相应操作
     void on_newFile_triggered();
 
     void on_openFile_triggered();
-
 
     void on_nameList_currentTextChanged(const QString &currentText);
 
@@ -82,16 +82,21 @@ private slots:
 
 private:
     bool tagChanged;
+    //这一个变量表示窗体中当前显示的植物，在植物列表中切换的时候这一个变量也会切换
     plant currentPlant;
+    //这是一个占位符，因为用的是变量不是指针没法赋nullptr，当前植物是这个的时候表示为空
     const plant zombiePlant;
     QVector<QString> currentPlantList;
+    //表示当前在窗口中显示的TAG
     plant::tag* currentTag;
     Ui::MainWindow *ui;
     QString DBDir;
     QString assetDir;
     bool imgLabelEnabled = false;
     void chooseDBRootDir();
+    //刷新植物列表
     void updatePlantListDisplay();
+    //根据当前植物刷新窗体中显示的信息
     void updatePlantDisplay();
     QString readDBBaseDir();
     void writeDBBaseDir(QString dir);

@@ -11,6 +11,9 @@
 #include "FilterExtension.generated.h"
 
 UCLASS()
+/// <summary>
+/// 该类负责将CustomFilter对象添加到编辑器当中
+/// </summary>
 class UFilterExtension : public UContentBrowserFrontEndFilterExtension
 {
 public:
@@ -20,3 +23,5 @@ public:
 	virtual void AddFrontEndFilterExtensions(TSharedPtr<class FFrontendFilterCategory> DefaultCategory, TArray< TSharedRef<class FFrontendFilter> >& InOutFilterList) const override;
 	// End of UContentBrowserFrontEndFilterExtension interface
 };
+
+DECLARE_LOG_CATEGORY_EXTERN(MyLog, Log, All);

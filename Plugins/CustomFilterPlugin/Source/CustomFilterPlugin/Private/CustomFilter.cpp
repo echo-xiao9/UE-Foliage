@@ -5,17 +5,9 @@
 
 #define LOCTEXT_NAMESPACE "CustomFilter"
 
-DEFINE_LOG_CATEGORY(MyLog);
-
+// 过滤器的颜色
 FLinearColor CustomFilter::GetColor() const
 {
-	/*if (filterKey.Equals("Color") && filterValue.Equals("Yellow"))
-		return FLinearColor::Yellow;
-	if (filterKey.Equals("Color") && filterValue.Equals("White"))
-		return FLinearColor::White;
-	if (filterKey.Equals("Color") && filterValue.Equals("Green"))
-		return FLinearColor::Green;*/
-
 	//如果是颜色tag，则按照h值生成过滤器tag颜色
 	if (filterType.Equals("Color"))
 	{
@@ -74,7 +66,8 @@ FText CustomFilter::GetToolTipText() const
 }
 
 
-// 该函数对内容浏览器中显示的文件夹下的每个文件执行判断，return true则显示。
+// 该函数对内容浏览器中显示的文件夹下的每个文件执行判断，return true则说明该文件符合过滤条件。
+// 通过文件名和项目名，调用getOneTagByPlantName方法，从数据库获取其tag，并根据过滤器类型进行判断。
 bool CustomFilter::PassesFilter(FAssetFilterType InItem) const
 {
 	FName itemName = InItem.GetItemName();
@@ -101,7 +94,6 @@ bool CustomFilter::PassesFilter(FAssetFilterType InItem) const
 
 	//UE_LOG(MyLog, Warning, TEXT("filePath:%s"), *path); //debug
 
-	//DBApi::getAllTagsByPlantNameRequest request;
 	DBApi::getOneTagByPlantNameRequest request;
 	request.plantName = path;
 	request.projName = FApp::GetProjectName();
@@ -141,24 +133,6 @@ bool CustomFilter::PassesFilter(FAssetFilterType InItem) const
 		{
 			return true;
 		}
-
-		//for (int32 Index = 0; Index != stringTags.Num(); ++Index)
-		//{
-		//	if (stringTags[Index].key.Equals(filterKey))
-		//	{
-		//		FString ecosysPop, ecosysVal = stringTags[Index].value;
-		//		while (ecosysVal.Split("/", &ecosysPop, &ecosysVal)) {
-		//			if (ecosysPop.Equals(filterValue))
-		//			{
-		//				return true;
-		//			}
-		//		}
-		//		/*if (stringTags[Index].value.Equals(filterValue))
-		//		{
-		//			return true;
-		//		}*/
-		//	}
-		//}
 	}
 	else if (filterType.Equals("Color"))
 	{

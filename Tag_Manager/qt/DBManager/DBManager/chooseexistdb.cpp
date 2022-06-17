@@ -1,6 +1,5 @@
 ﻿#include "chooseexistdb.h"
 #include "ui_chooseexistdb.h"
-
 ChooseExistDB::ChooseExistDB(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ChooseExistDB)

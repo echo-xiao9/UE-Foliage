@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "PlantBunch.h"
@@ -18,10 +17,10 @@ public:
 	// Sets default values for this actor's properties
 	APlantBunchManager();
 	UPROPERTY(EditAnywhere, Category = "Generate...")
-		UPlantBunch* plantBunch;
+	UPlantBunch* plantBunch;
     
-    UPROPERTY(EditAnywhere, Category = "MainTree")
-    AActor* mainTree;
+  UPROPERTY(EditAnywhere, Category = "MainTree")
+  AActor* mainTree;
 
 private:
 	float GetLandscapeHeight(FVector spawnLocation, float radius, float maxDeltaHeight, bool& smoothLandscape);
@@ -34,5 +33,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	void Generate();
-    void GenerateSingle(FVector centerPos, float radius, float angle,int type);
+  void Recommend(){plantBunch-> recommendPlant();}
+  void GenerateSingle(FVector centerPos, float radius, float angle,int type);
 };

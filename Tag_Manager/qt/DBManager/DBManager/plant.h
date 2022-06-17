@@ -3,6 +3,7 @@
 #include<QString>
 #include<QVector>
 #include <QPair>
+//定义了一个植物类，用于存储相关信息，并且可以导出到文件
 class plant
 {
 public:

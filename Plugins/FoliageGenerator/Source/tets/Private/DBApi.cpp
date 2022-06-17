@@ -20,10 +20,10 @@
     #include "Windows/AllowWindowsPlatformTypes.h"
     #include "Windows/PreWindowsApi.h"
     #include <WinSock2.h>
-    #include <Windows.h>//±ØÐëÔÚ<WinSock2.h>µÄÏÂÃæ°üº¬£¬·ñÔò±àÒë²»Í¨¹ý
+    #include <Windows.h>//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½<WinSock2.h>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ë²»Í¨ï¿½ï¿½
     #include "Windows/PostWindowsApi.h"
     #include "Windows/HideWindowsPlatformTypes.h"
-    #pragma comment(lib,"WS2_32.lib")//Òª°üº¬WinSock2.h±ØÐëÒª°üÕâ¸ö¿â
+    #pragma comment(lib,"WS2_32.lib")//Òªï¿½ï¿½ï¿½ï¿½WinSock2.hï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 #endif
 
 #include "Json/Public/JSON.h"
@@ -62,12 +62,14 @@ std::string getDataFromSocket(std::string request){
     }
     
     int num=send(server_fd,(void*)(request.c_str()),request.size(),0);
-    char buffer[4096];
+    char* buffer = new char[1024 * 1024];
     socklen_t len = sizeof(struct sockaddr);
-    ssize_t rb = recv(server_fd,buffer,sizeof(buffer) - sizeof(buffer[0]),0);
+    ssize_t rb = recv(server_fd,buffer,1024 * 1024 - 1, 0);
     buffer[rb / sizeof(buffer[0])] = '\0';
     close(server_fd);
-    return std::string(buffer);
+    std::string res(buffer);
+    delete[] buffer;
+    return res;
 }
 
 #else
@@ -80,7 +82,7 @@ std::string DBApi::getDataFromDatabase(std::string request)
         UE_LOG(LogClass, Warning, TEXT("startup error\n"));
         return "error";
     }
-    // ´´½¨Ì×½Ú×Ö
+    // ï¿½ï¿½ï¿½ï¿½ï¿½×½ï¿½ï¿½ï¿½
     SOCKET CommunicateSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (CommunicateSocket == INVALID_SOCKET)
     {
@@ -88,12 +90,12 @@ std::string DBApi::getDataFromDatabase(std::string request)
         printf(" Failed socket() \n");
         return "error";
     }
-    // ÌîÐ´Ô¶³ÌµØÖ·ÐÅÏ¢
+    // ï¿½ï¿½Ð´Ô¶ï¿½Ìµï¿½Ö·ï¿½ï¿½Ï¢
     sockaddr_in ServerAddress;
     ServerAddress.sin_family = AF_INET;
     ServerAddress.sin_port = htons(10086);
-    // ×¢Òâ£¬ÕâÀïÒªÌîÐ´·þÎñÆ÷³ÌÐò£¨TCPServer³ÌÐò£©ËùÔÚ»úÆ÷µÄIPµØÖ·
-    // Èç¹ûÄãµÄ¼ÆËã»úÃ»ÓÐÁªÍø£¬Ö±½ÓÊ¹ÓÃ127.0.0.1¼´¿É
+    // ×¢ï¿½â£¬ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Ð´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½TCPServerï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú»ï¿½ï¿½ï¿½ï¿½ï¿½IPï¿½ï¿½Ö·
+    // ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½Ê¹ï¿½ï¿½127.0.0.1ï¿½ï¿½ï¿½ï¿½
     ServerAddress.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");  //192.168.0.106
     
     if (connect(CommunicateSocket, (sockaddr*)&ServerAddress, sizeof(ServerAddress)) == SOCKET_ERROR)
@@ -103,20 +105,20 @@ std::string DBApi::getDataFromDatabase(std::string request)
         return "error";
     }
     send(CommunicateSocket, request.c_str(), request.size(), 0);
-    // ½ÓÊÕÊý¾Ý
-    char* BufferData = new char[4096];
-    int ReturnLength = recv(CommunicateSocket, BufferData, 4096, 0);//receive
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    char* BufferData = new char[1024 * 1024];
+    int ReturnLength = recv(CommunicateSocket, BufferData, 1024 * 1024, 0);//receive
     if (ReturnLength > 0)
     {
-        if (!(ReturnLength >= 4096))BufferData[ReturnLength] = '\0';  //È·±£ÊÕµ½µÄ×Ö·û´®ÊÇÒÔ/0½áÎ²
-        printf(" ½ÓÊÕµ½Êý¾Ý£º%s", BufferData);
+        if (!(ReturnLength >= 1024 * 1024))BufferData[ReturnLength] = '\0';  //È·ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½/0ï¿½ï¿½Î²
+        printf(" ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½Ý£ï¿½%s", BufferData);
         UE_LOG(LogClass, Warning, TEXT("Get Data %s \n"), *(FString(BufferData)));
     }
     std::string res(BufferData);
     delete[] BufferData;
-    // ¹Ø±ÕÌ×½Ú×Ö
+    // ï¿½Ø±ï¿½ï¿½×½ï¿½ï¿½ï¿½
     closesocket(CommunicateSocket);
-    WSACleanup();//ÓëWSAStartupÅäºÏÊ¹ÓÃ
+    WSACleanup();//ï¿½ï¿½WSAStartupï¿½ï¿½ï¿½Ê¹ï¿½ï¿½
     return res;
 }
 #endif
@@ -124,7 +126,7 @@ std::string DBApi::getDataFromDatabase(std::string request)
 DBApi::getAllTagsByPlantNameResult DBApi::getAllTagsByPlantName(getAllTagsByPlantNameRequest request)
 {
     FString requestString;
-    TSharedPtr<FJsonObject> requestJson = MakeShareable(new FJsonObject); //TsharedRef¶ÔÓ¦C++11ÖÇÄÜÖ¸Õë
+    TSharedPtr<FJsonObject> requestJson = MakeShareable(new FJsonObject); //TsharedRefï¿½ï¿½Ó¦C++11ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
     requestJson->SetStringField("method", "getAllTagsByPlantName");
     requestJson->SetStringField("projName", request.projName);
     requestJson->SetStringField("plantName", request.plantName);
@@ -147,11 +149,11 @@ DBApi::getAllTagsByPlantNameResult DBApi::getAllTagsByPlantName(getAllTagsByPlan
     }
     getAllTagsByPlantNameResult result;
     TSharedPtr<FJsonObject> JsonObject;
-    TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(rawRes); //JsonStringÊÇÒª½âÎöµÄ×Ö·û´®
+    TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(rawRes); //JsonStringï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½
     if (FJsonSerializer::Deserialize(Reader, JsonObject)) {
-        result.errCode = JsonObject->GetIntegerField(TEXT("errCode")); //½«·µ»Ø"Mei"
+        result.errCode = JsonObject->GetIntegerField(TEXT("errCode")); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"Mei"
         UE_LOG(LogClass, Warning, TEXT("Raw errCode is %d\n"), result.errCode);
-        //ÆäËüJSonÀàÐÍµÄ½âÎöºÍ×Ö·û´®ÀàËÆ
+        //ï¿½ï¿½ï¿½ï¿½JSonï¿½ï¿½ï¿½ÍµÄ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         if (result.errCode == 0) {
             TArray<TSharedPtr<FJsonValue>> jsonArrayNumber = JsonObject->GetArrayField(TEXT("numberTags"));
             for (auto& str : jsonArrayNumber) {
@@ -179,7 +181,7 @@ DBApi::getAllTagsByPlantNameResult DBApi::getAllTagsByPlantName(getAllTagsByPlan
 DBApi::getOneTagByPlantNameResult DBApi::getOneTagByPlantName(getOneTagByPlantNameRequest request)
 {
     FString requestString;
-    TSharedPtr<FJsonObject> requestJson = MakeShareable(new FJsonObject); //TsharedRef¶ÔÓ¦C++11ÖÇÄÜÖ¸Õë
+    TSharedPtr<FJsonObject> requestJson = MakeShareable(new FJsonObject); //TsharedRefï¿½ï¿½Ó¦C++11ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
     requestJson->SetStringField("method", "getOneTagByPlantName");
     requestJson->SetStringField("projName", request.projName);
     requestJson->SetStringField("plantName", request.plantName);
@@ -209,11 +211,11 @@ DBApi::getOneTagByPlantNameResult DBApi::getOneTagByPlantName(getOneTagByPlantNa
     }
     getOneTagByPlantNameResult result;
     TSharedPtr<FJsonObject> JsonObject;
-    TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(rawRes); //JsonStringÊÇÒª½âÎöµÄ×Ö·û´®
+    TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(rawRes); //JsonStringï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½
     if (FJsonSerializer::Deserialize(Reader, JsonObject))
     {
-        result.errCode = JsonObject->GetIntegerField(TEXT("errCode")); //½«·µ»Ø"Mei"
-        //ÆäËüJSonÀàÐÍµÄ½âÎöºÍ×Ö·û´®ÀàËÆ
+        result.errCode = JsonObject->GetIntegerField(TEXT("errCode")); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"Mei"
+        //ï¿½ï¿½ï¿½ï¿½JSonï¿½ï¿½ï¿½ÍµÄ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         if (result.errCode == 0) {
             TArray<TSharedPtr<FJsonValue>> jsonArrayNumber = JsonObject->GetArrayField(TEXT("numberTags"));
             for (auto& str : jsonArrayNumber) {
@@ -241,7 +243,7 @@ DBApi::getOneTagByPlantNameResult DBApi::getOneTagByPlantName(getOneTagByPlantNa
 DBApi::findAllPlantsWithSomeTagsResult DBApi::findAllPlantsWithSomeTags(findAllPlantsWithSomeTagsRequest request)
 {
     FString requestString;
-    TSharedPtr<FJsonObject> requestJson = MakeShareable(new FJsonObject); //TsharedRef¶ÔÓ¦C++11ÖÇÄÜÖ¸Õë
+    TSharedPtr<FJsonObject> requestJson = MakeShareable(new FJsonObject); //TsharedRefï¿½ï¿½Ó¦C++11ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
     requestJson->SetStringField("method", "findAllPlantsWithSomeTags");
     requestJson->SetStringField("projName", request.projName);
     TArray<TSharedPtr<FJsonValue>> numberTagNames;
@@ -281,10 +283,10 @@ DBApi::findAllPlantsWithSomeTagsResult DBApi::findAllPlantsWithSomeTags(findAllP
     }
     findAllPlantsWithSomeTagsResult result;
     TSharedPtr<FJsonObject> JsonObject;
-    TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(rawRes); //JsonStringÊÇÒª½âÎöµÄ×Ö·û´®
+    TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(rawRes); //JsonStringï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½
     if (FJsonSerializer::Deserialize(Reader, JsonObject)) {
-        result.errCode = JsonObject->GetIntegerField(TEXT("errCode")); //½«·µ»Ø"Mei"
-        //ÆäËüJSonÀàÐÍµÄ½âÎöºÍ×Ö·û´®ÀàËÆ
+        result.errCode = JsonObject->GetIntegerField(TEXT("errCode")); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"Mei"
+        //ï¿½ï¿½ï¿½ï¿½JSonï¿½ï¿½ï¿½ÍµÄ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         if (result.errCode == 0) {
             auto& arrayRes = JsonObject->GetArrayField(TEXT("plants"));
             for (auto& plant : arrayRes) {
@@ -303,7 +305,7 @@ DBApi::findAllPlantsWithSomeTagsResult DBApi::findAllPlantsWithSomeTags(findAllP
 DBApi::getAllPlantsInDatabaseResult DBApi::getAllPlantsInDatabase(getAllPlantsInDatabaseRequest request)
 {
     FString requestString;
-    TSharedPtr<FJsonObject> requestJson = MakeShareable(new FJsonObject); //TsharedRef¶ÔÓ¦C++11ÖÇÄÜÖ¸Õë
+    TSharedPtr<FJsonObject> requestJson = MakeShareable(new FJsonObject); //TsharedRefï¿½ï¿½Ó¦C++11ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
     requestJson->SetStringField("method", "getAllPlantsInDatabase");
     requestJson->SetStringField("projName", request.projName);
     TSharedRef<TJsonWriter<TCHAR, TPrettyJsonPrintPolicy<TCHAR>>> Writer = TJsonWriterFactory<TCHAR, TPrettyJsonPrintPolicy<TCHAR>>::Create(&requestString);
@@ -322,10 +324,10 @@ DBApi::getAllPlantsInDatabaseResult DBApi::getAllPlantsInDatabase(getAllPlantsIn
     }
     getAllPlantsInDatabaseResult result;
     TSharedPtr<FJsonObject> JsonObject;
-    TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(rawRes); //JsonStringÊÇÒª½âÎöµÄ×Ö·û´®
+    TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(rawRes); //JsonStringï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½
     if (FJsonSerializer::Deserialize(Reader, JsonObject)) {
-        result.errCode = JsonObject->GetIntegerField(TEXT("errCode")); //½«·µ»Ø"Mei"
-        //ÆäËüJSonÀàÐÍµÄ½âÎöºÍ×Ö·û´®ÀàËÆ
+        result.errCode = JsonObject->GetIntegerField(TEXT("errCode")); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"Mei"
+        //ï¿½ï¿½ï¿½ï¿½JSonï¿½ï¿½ï¿½ÍµÄ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         if (result.errCode == 0) {
             auto& arrayRes = JsonObject->GetArrayField(TEXT("plants"));
             for (auto& plant : arrayRes) {
@@ -344,7 +346,7 @@ DBApi::getAllPlantsInDatabaseResult DBApi::getAllPlantsInDatabase(getAllPlantsIn
 DBApi::getAllPlantsInOneHierarchyResult DBApi::getAllPlantsInOneHierarchy(getAllPlantsInOneHierarchyRequest request)
 {
     FString requestString;
-    TSharedPtr<FJsonObject> requestJson = MakeShareable(new FJsonObject); //TsharedRef¶ÔÓ¦C++11ÖÇÄÜÖ¸Õë
+    TSharedPtr<FJsonObject> requestJson = MakeShareable(new FJsonObject); //TsharedRefï¿½ï¿½Ó¦C++11ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
     requestJson->SetStringField("method", "getAllPlantsInOneHierarchy");
     requestJson->SetStringField("projName", request.projName);
     requestJson->SetNumberField("hierarchy", request.hierarchy);
@@ -364,10 +366,10 @@ DBApi::getAllPlantsInOneHierarchyResult DBApi::getAllPlantsInOneHierarchy(getAll
     }
     getAllPlantsInOneHierarchyResult result;
     TSharedPtr<FJsonObject> JsonObject;
-    TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(rawRes); //JsonStringÊÇÒª½âÎöµÄ×Ö·û´®
+    TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(rawRes); //JsonStringï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½
     if (FJsonSerializer::Deserialize(Reader, JsonObject)) {
-        result.errCode = JsonObject->GetIntegerField(TEXT("errCode")); //½«·µ»Ø"Mei"
-        //ÆäËüJSonÀàÐÍµÄ½âÎöºÍ×Ö·û´®ÀàËÆ
+        result.errCode = JsonObject->GetIntegerField(TEXT("errCode")); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"Mei"
+        //ï¿½ï¿½ï¿½ï¿½JSonï¿½ï¿½ï¿½ÍµÄ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         if (result.errCode == 0) {
             auto& arrayRes = JsonObject->GetArrayField(TEXT("plants"));
             for (auto& plant : arrayRes) {

@@ -10,7 +10,7 @@
 #include "Misc/Paths.h"
 #include "Math/Color.h"
 /**
- *
+ 该类负责实现具体单个过滤器选项
  */
 class CustomFilter : public FFrontendFilter
 {
@@ -50,4 +50,3 @@ private:
 	FString filterMaxValue;
 };
 
-DECLARE_LOG_CATEGORY_EXTERN(MyLog, Log, All);

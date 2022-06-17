@@ -3,7 +3,7 @@
 
 #include <QDialog>
 #include "plant.h"
-
+/*这个窗口只用来显示现在的模板，不过也可以根据传入的plant显示整个植物的tag信息*/
 namespace Ui {
 class plant_browser;
 }

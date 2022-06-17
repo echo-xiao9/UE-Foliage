@@ -21,6 +21,7 @@ void APlantBunchManager::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 }
 
+// get reandom number from low to up
 float GetRandomReal(float low, float up)
 {
     float fResult;
@@ -52,6 +53,7 @@ float toRad(float angle){
     return angle*3.14/180;
 }
 
+// generate a single layer(eg. grass, flower)
 void APlantBunchManager::GenerateSingle(FVector centerPos,float radius, float angle, int type=0){
     UE_LOG(LogClass, Log, TEXT("cos:%f"),  FMath::Cos(angle));
     UE_LOG(LogClass, Log, TEXT("sin:%f"),  FMath::Sin(angle));
@@ -109,6 +111,9 @@ void APlantBunchManager::GenerateSingle(FVector centerPos,float radius, float an
     
 }
 
+// 在植物生成点及周围点进行采样，返回采样得到的最低点位置
+// 如果最高点和最低点高度差超过maxDeltaHeight，则不进行生成
+// 检测方式为 在给定的位置沿z轴方向，调用SweepMultiByObjectType函数检测Landscape类型的物体，如果检测到则获取碰撞点。
 float APlantBunchManager::GetLandscapeHeight(FVector spawnLocation, float radius, float maxDeltaHeight, bool& validPos)
 {
     TArray<FVector> testPositions;
@@ -180,6 +185,7 @@ float APlantBunchManager::GetLandscapeHeight(FVector spawnLocation, float radius
     }
 }
 
+// generate plants in editor according to the Geometric layout of garden
 void APlantBunchManager::Generate()
 {
  
@@ -264,3 +270,4 @@ void APlantBunchManager::Generate()
     
     UE_LOG(LogClass, Log, TEXT("Generate.%s"));
 }
+
