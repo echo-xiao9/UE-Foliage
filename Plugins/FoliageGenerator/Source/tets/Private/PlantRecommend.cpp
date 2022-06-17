@@ -48,7 +48,7 @@ TArray<FString> UPlantRecommend::GetRecommendPlants(
 	colorRange.key = colorH->key;
 	colorRange.lowerBound = colorH->value - 360.0 * HOff / (colorS->value + HOff);
 	colorRange.upperBound = colorH->value + 360.0 * HOff / (colorS->value + HOff);
-	if (targetLayer == FoliageGeneratorUtils::PlantLayer::Flower) {
+	if (targetLayer == FoliageGeneratorUtils::PlantLayer::Flower || targetLayer == FoliageGeneratorUtils::PlantLayer::Stone) {
 		colorRange.lowerBound = 0;
 		colorRange.upperBound = 360;
 	}
@@ -58,12 +58,20 @@ TArray<FString> UPlantRecommend::GetRecommendPlants(
 	colorRange.key = colorS->key;
 	colorRange.lowerBound = colorS->value - SOff;
 	colorRange.upperBound = colorS->value + SOff;
+	if (targetLayer == FoliageGeneratorUtils::PlantLayer::Stone) {
+		colorRange.lowerBound = 0;
+		colorRange.upperBound = 100;
+	}
 	colorRanges.Add(colorRange);
 
 	float VOff = 50.0;
 	colorRange.key = colorV->key;
 	colorRange.lowerBound = colorV->value - VOff;
 	colorRange.upperBound = colorV->value + VOff;
+	if (targetLayer == FoliageGeneratorUtils::PlantLayer::Stone) {
+		colorRange.lowerBound = 0;
+		colorRange.upperBound = 100;
+	}
 	colorRanges.Add(colorRange);
 	colorRequest.numberTags = colorRanges;
 	DBApi::findAllPlantsWithSomeTagsResult colorRes = DBApi::findAllPlantsWithSomeTags(colorRequest);
