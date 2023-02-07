@@ -630,14 +630,5 @@ GUI界面方面，我们采用的是QT，原因主要是基于项目开发工作
 **
 
 
-**附录1、组会记录**
-
-![](Aspose.Words.ce4afd25-1bdc-44f8-92a4-6691ba97ed54.055.png)
-
-图: 组会记录
-
-重要组会讨论成果整理：因为肖老师说和实验室以及和老师的讨论也作为中间过程是我们的成果，并且中间因为对需求的了解不断加深，方案换了好几个，所以也放在报告中。
-
-![](Aspose.Words.ce4afd25-1bdc-44f8-92a4-6691ba97ed54.056.png) ![](Aspose.Words.ce4afd25-1bdc-44f8-92a4-6691ba97ed54.057.png) ![](Aspose.Words.ce4afd25-1bdc-44f8-92a4-6691ba97ed54.058.png) ![](Aspose.Words.ce4afd25-1bdc-44f8-92a4-6691ba97ed54.059.png) ![](Aspose.Words.ce4afd25-1bdc-44f8-92a4-6691ba97ed54.060.png) ![](Aspose.Words.ce4afd25-1bdc-44f8-92a4-6691ba97ed54.061.png)
 
 
